@@ -38,9 +38,6 @@ jobs:
     name: Unit/Integration Tests
     needs: lint-app
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: write
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v6
@@ -61,3 +58,14 @@ jobs:
           cd app
           npm test
 
+      - name: Upload Test Results
+        id: upload-report
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-report
+          path: app/.vitest/
+
+      - name: Link HTML report
+        run: echo "::notice title=Vitest HTML report::$REPORT_URL"
+        env:
+          REPORT_URL: https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }}
