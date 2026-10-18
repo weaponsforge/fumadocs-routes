@@ -4,17 +4,45 @@ Generates `docs-routes.json` containing a list of root docs sections + labels, p
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
+> [!IMPORTANT]
+> Fumadocs doesn't have a `private` frontmatter or meta field by default. The `private` flags used in [`content/docs/`](content/docs/) are a custom added field, added by extending the docs schemas in a Fumadocs project's `source.config.ts`, for example:
+
+<details>
+<summary>👉 Click to view an extended Fumadocs <b>source.config.ts</b></summary>
+
+```ts
+import { metaSchema, pageSchema } from 'fumadocs-core/source/schema'
+import { defineConfig, defineDocs } from 'fumadocs-mdx/config'
+import { z } from 'zod'
+
+export const docs = defineDocs({
+  dir: 'content/docs',
+  docs: {
+    schema: pageSchema.extend({
+      private: z.boolean().default(false),
+    }),
+  },
+  meta: {
+    schema: metaSchema.extend({
+      private: z.boolean().default(false),
+    }),
+  },
+})
+```
+
+</details>
+
 The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `meta.json` files, placed where [Fumadocs](https://github.com/fuma-nama/fumadocs) puts docs content by default. It is the default input when `--docs` isn't given, and the [Output](#output) below is generated from it.
 
 ### Table of Contents
 
 - [Requirements](#-requirements)
 - [Output](#output)
-- [CLI Usage](#-cli-usage)
 - [Quickstart](#-quickstart)
 - [Usage (Node, Docker)](#-usage)
 - [Available Scripts](#-available-scripts)
 - [Docker Scripts](#-docker-scripts)
+- [CLI Usage](#-cli-usage)
 - [Layout](#layout)
 - [Validation](#validation)
 
@@ -71,46 +99,6 @@ The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `me
 
 File paths become slugs the way Fumadocs builds URLs: `(group)` segments, the extension (`.mdx`/`.md`) and a trailing `index` are dropped.
 
-## 💻 CLI Usage
-
-Install the package in a Fumadocs project, then run it from anywhere inside that project:
-
-```bash
-npm install fumadocs-routes
-npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
-```
-
-| Option | Description |
-| --- | --- |
-| `--docs`, `-p` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
-| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected, the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
-| `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
-
-- `<root>` is the nearest folder with a `package.json`, searched from the working directory upwards.
-- Relative paths resolve from the working directory.
-
-```bash
-npx fumadocs-routes -o ./src/lib/routes/generated
-npm run routes:generate -- --docs ./content/docs -o ./public --strict
-```
-
-### From code
-
-```ts
-import { generate, type IDocsRoutes } from 'fumadocs-routes'
-
-const routes: IDocsRoutes = generate({
-  args: {
-    docs: 'content/docs',
-    output: 'public',
-    strict: true
-  }
-})
-```
-
-`generate()` writes the file and returns the route lists. On validation errors, it prints them to stderr and throws instead of exiting.
-
-The package also exports `findRootDir()`, `ROOT_DIR`, `CONTENT_DIR`, `OUTPUT_FILE_NAME`, the building blocks (`collectSections`, `walk`, `Reader`, `RoutesCollection`, `Diagnostics`) and the `GeneratorContext`, `IGenerateArgs`, `IGenerateRoutes` and `RawData` types.
 
 ## 🆕 Quickstart
 
@@ -239,9 +227,9 @@ Same as `npm run routes:generate`. Also the entry point of the production Docker
 
 ### `npm run routes:generate`
 
-Runs the built CLI (`dist/scripts/generate/cli.js`) and writes `docs-routes.json`.
-
 > Requires `npm run build` first.
+
+Runs the built CLI (`dist/scripts/generate/cli.js`) and writes `docs-routes.json`.
 
 Pass [CLI options](#-cli-usage) after `--` e.g. `npm run routes:generate -- -o ./public`.
 
@@ -380,6 +368,48 @@ Watches file changes in `.ts` files using the `tsc --watch` option with `dynamic
 
 </details>
 <br>
+
+
+## 💻 CLI Usage
+
+Install the package in a Fumadocs project, then run it from anywhere inside that project:
+
+```bash
+npm install fumadocs-routes
+npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
+```
+
+| Option | Description |
+| --- | --- |
+| `--docs`, `-p` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
+| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected, the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
+| `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
+
+- `<root>` is the nearest folder with a `package.json`, searched from the working directory upwards.
+- Relative paths resolve from the working directory.
+
+```bash
+npx fumadocs-routes -o ./src/lib/routes/generated
+npm run routes:generate -- --docs ./content/docs -o ./public --strict
+```
+
+### From code
+
+```ts
+import { generate, type IDocsRoutes } from 'fumadocs-routes'
+
+const routes: IDocsRoutes = generate({
+  args: {
+    docs: 'content/docs',
+    output: 'public',
+    strict: true
+  }
+})
+```
+
+`generate()` writes the file and returns the route lists. On validation errors, it prints them to stderr and throws instead of exiting.
+
+The package also exports `findRootDir()`, `ROOT_DIR`, `CONTENT_DIR`, `OUTPUT_FILE_NAME`, the building blocks (`collectSections`, `walk`, `Reader`, `RoutesCollection`, `Diagnostics`) and the `GeneratorContext`, `IGenerateArgs`, `IGenerateRoutes` and `RawData` types.
 
 
 ## Layout
