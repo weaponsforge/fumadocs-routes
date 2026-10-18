@@ -1,0 +1,34 @@
+---
+title: Getting Started
+description: Stats Calculator
+icon: SquareBookmark
+---
+
+### Character Stats Calculator
+
+Select a character stats calculator to use.
+
+import { HomeIcon } from 'lucide-react';
+
+<Cards>
+  {[
+    'Knight',
+    'Wizard',
+    'Elf',
+    'Magic Gladiator',
+    'Dark Lord',
+    'Summoner',
+    'Rage Fighter'
+  ].map((item, id) => (
+    <Card
+      key={id}
+      href={item === 'Wizard'
+        ? `/docs/stats-calculator/${item.toLowerCase()}`
+        : null
+      }
+      title={item}
+    >
+      <span>{item} stat calculator</span>
+    </Card>)
+  )}
+</Cards>

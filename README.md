@@ -1,8 +1,22 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` flags in Fumadocs `content/docs`.
+Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs`.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
+
+The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `meta.json` files, placed where [Fumadocs](https://github.com/fuma-nama/fumadocs) puts docs content by default. It is the default input when `--docs` isn't given, and the [Output](#output) below is generated from it.
+
+### Table of Contents
+
+- [Requirements](#-requirements)
+- [Output](#output)
+- [CLI Usage](#-cli-usage)
+- [Quickstart](#-quickstart)
+- [Usage (Node, Docker)](#-usage)
+- [Available Scripts](#-available-scripts)
+- [Docker Scripts](#-docker-scripts)
+- [Layout](#layout)
+- [Validation](#validation)
 
 ## 📋 Requirements
 
@@ -29,6 +43,8 @@ Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
 ## Output
 
+`docs-routes.json`, written to the project root by default (see [`--output`](#-cli-usage)).
+
 ```json
 {
   "sections": ["characters", "secrets", "stats-calculator", "weapons"],
@@ -54,12 +70,53 @@ Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
 File paths become slugs the way Fumadocs builds URLs: `(group)` segments, the extension (`.mdx`/`.md`) and a trailing `index` are dropped.
 
+## 💻 CLI Usage
+
+Install the package in a Fumadocs project, then run it from anywhere inside that project:
+
+```bash
+npm install fumadocs-routes
+npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
+```
+
+| Option | Description |
+| --- | --- |
+| `--docs`, `-p` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
+| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected, the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
+| `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
+
+- `<root>` is the nearest folder with a `package.json`, searched from the working directory upwards.
+- Relative paths resolve from the working directory.
+
+```bash
+npx fumadocs-routes -o ./src/lib/routes/generated
+npm run routes:generate -- --docs ./content/docs -o ./public --strict
+```
+
+### From code
+
+```ts
+import { generate, type IDocsRoutes } from 'fumadocs-routes'
+
+const routes: IDocsRoutes = generate({
+  args: {
+    docs: 'content/docs',
+    output: 'public',
+    strict: true
+  }
+})
+```
+
+`generate()` writes the file and returns the route lists. On validation errors, it prints them to stderr and throws instead of exiting.
+
+The package also exports `findRootDir()`, `ROOT_DIR`, `CONTENT_DIR`, `OUTPUT_FILE_NAME`, the building blocks (`collectSections`, `walk`, `Reader`, `RoutesCollection`, `Diagnostics`) and the `GeneratorContext`, `IGenerateArgs`, `IGenerateRoutes` and `RawData` types.
+
 ## 🆕 Quickstart
 
 #### 1. Clone the repository.
 
 ```sh
-https://raw.githubusercontent.com/weaponsforge/fumadocs-routes.git
+git clone https://github.com/weaponsforge/fumadocs-routes.git
 ```
 
 #### 2. Install dependencies.
@@ -100,7 +157,15 @@ See the [Available Scripts](#-available-scripts) section for more information.
    node dist/scripts/sample.js
    ```
 
-3. See the [Available Scripts](#-available-scripts) section for more information.
+3. Generate `docs-routes.json` from the sample [`content/docs/`](content/docs/):
+
+   ```bash
+   cd app
+   npm run build
+   npm run routes:generate
+   ```
+
+4. See the [Available Scripts](#-available-scripts) section for more information.
 
 ## ⚡Alternate Usage
 
@@ -158,6 +223,22 @@ Watches file changes in `.ts` files using the `tsc --watch` option.
 
 Builds JavaScript, `.d.ts` declaration files, and map files from the TypeScript source files in the `/src` directory.
 
+### `npm start`
+
+Same as `npm run routes:generate`. Also the entry point of the production Docker image.
+
+### `npm run routes:generate`
+
+Runs the built CLI (`dist/scripts/generate/cli.js`) and writes `docs-routes.json`.
+
+> Requires `npm run build` first.
+
+Pass [CLI options](#-cli-usage) after `--` e.g. `npm run routes:generate -- -o ./public`.
+
+### `npm run routes:check`
+
+Same as `npm run routes:generate`, with `--strict`.
+
 ### `npm run types:check`
 
 Runs type-checking without generating the JavaScript or declaration files from the TypeScript files in the `/src` and `__tests__` directories.
@@ -172,7 +253,7 @@ Fixes lint errors in TypeScript files.
 
 ### `npm test`
 - Runs test scripts defined in `*.test.ts` files with coverage.
-- Generates a vitest test report into the **/html** directory.
+- Generates a vitest test report into the **/.vitest** directory.
 - Run `npm run report:view` to preview the generated report.
 
 ### `npm run test:ui`
@@ -183,10 +264,10 @@ Fixes lint errors in TypeScript files.
 
 ### `npm run report:view`
 
-> **NOTE:** This script requires running `npm test` first to generate a test report into the **/html** directory
+> **NOTE:** This script requires running `npm test` first to generate a test report into the **/.vitest** directory
 
-- Spins up a local web server accessible at `http://localhost:4174/`
-- Serves the website contents of a test report from the **/html** directory
+- Spins up a local web server accessible at `http://localhost:4173/`
+- Serves the website contents of a test report from the **/.vitest** directory
 
 ### `npm run info`
 
@@ -225,14 +306,14 @@ docker exec -it fumadocs-routes-dev <AVAILABLE_DOCKER_SCRIPT>
 
 **B. Using Only Docker (PowerShell)**
 
-`docker run -it -v ${pwd}/app:/opt/app -v /opt/app/node_modules --rm weaponsforge/sendemail:dev <AVAILABLE_DOCKER_SCRIPT>`
+`docker run -it -v ${pwd}/app:/opt/app -v /opt/app/node_modules --rm weaponsforge/fumadocs-routes:dev <AVAILABLE_DOCKER_SCRIPT>`
 
 ### Scripts
 
 ### `npm run docker:debug`
 
-1. Runs the `"/src/scripts/sample/sample.ts"` script in containers with debugging enabled in VSCode by default.
-2. Replace the `"/src/scripts/sample/sample.ts"` file path in the package.json file's `"docker:debug"` script with a target TypeScript file for debugging.
+1. Runs the `"/src/scripts/sample.ts"` script in containers with debugging enabled in VSCode by default.
+2. Replace the `"/src/scripts/sample.ts"` file path in the package.json file's `"docker:debug"` script with a target TypeScript file for debugging.
 3. Map port **`9229`** to enable debugging VSCode while running in Docker (PowerShell).
    - (A. Using Docker compose):<br>
    `docker exec -it fumadocs-routes-dev npm run docker:debug`
@@ -266,11 +347,11 @@ docker exec -it fumadocs-routes-dev <AVAILABLE_DOCKER_SCRIPT>
 
 ### `npm run docker:report:view`
 
-> **NOTE:** This script requires running `npm test` first to generate a test report into the **/html** directory
+> **NOTE:** This script requires running `npm test` first to generate a test report into the **/.vitest** directory
 
 - Docker command counterpart of the `npm run report:view` script.
-- Spins up a local web server accessible at `http://localhost:4174/`
-- Serves the website contents of a test report from the host's **/html** directory
+- Spins up a local web server accessible at `http://localhost:4173/`
+- Serves the website contents of a test report from the host's **/.vitest** directory
 
 ### `npm run docker:watch:win`
 
@@ -294,21 +375,25 @@ Watches file changes in `.ts` files using the `tsc --watch` option with `dynamic
 ## Layout
 
 ```text
-generate-docs-routes/
-├── index.ts                    entry point, calls main()
-├── main.ts                     creates the run context, runs the steps, writes the JSON, prints a summary
-├── lib/
-│   ├── classes/
-│   │   ├── diagnostics.ts      Diagnostics: collects warnings and errors, flush() prints them
-│   │   ├── reader.ts           Reader: reads meta.json, frontmatter and `private` values
-│   │   └── routes-collection.ts RoutesCollection: accumulates the lists, toJSON() sorts them
-│   ├── constants.ts            fixed values: paths, regexes, flags
-│   ├── section.ts              collectSections(): sections and section_labels
-│   ├── types.ts                RawData, IDocsRoutes (output shape, also used by routes.ts), GeneratorContext
-│   ├── utils.ts                pure helpers (toPosix, isGroup, joinSlug, ...)
-│   └── walk.ts                 walk(): private_sections, public_exceptions, private_pages
-├── package.json                "type": "module" for the compiled output
-└── tsconfig.json               NodeNext build to dist/
+app/
+├── content/docs/                     # Sample input, default --docs
+├── src/
+│   ├── index.ts                      # Package exports
+│   ├── lib/
+│   │   ├── classes/
+│   │   │   ├── diagnostics.ts        # Collects and prints warnings/errors
+│   │   │   ├── reader.ts             # Reads meta.json and frontmatter
+│   │   │   └── routes-collection.ts  # Accumulates and sorts the lists
+│   │   ├── constants.ts              # Paths, regexes, flags
+│   │   ├── section.ts                # Builds sections and section_labels
+│   │   ├── types.ts                  # Shared types
+│   │   ├── utils.ts                  # Small helper utility functions
+│   │   └── walk.ts                   # Builds private_sections, public_exceptions, private_pages
+│   └── scripts/generate/
+│       ├── cli.ts                    # CLI entry (bin)
+│       └── main.ts                   # generate(): runs the steps, writes the JSON
+├── package.json
+└── tsconfig.json
 ```
 
 ## Validation
@@ -319,8 +404,9 @@ generate-docs-routes/
 | Invalid `meta.json` JSON or frontmatter YAML | error, exit 1 | error, exit 1 |
 | Top-level folder (including one inside a top-level group) without `meta.json` | warning: the folder is left out of `sections` | error, exit 1 |
 | `content/docs` missing (e.g. Docker's `npm ci` stage) | warning: writes empty lists | warning: writes empty lists |
+| `--output` is a file path (an existing file, or ends in `.json`) | error, exit 1 | error, exit 1 |
 
-A top-level folder without a `meta.json` can't be a section. This includes folders inside top-level groups. Its pages fall back to the `characters` section in `getSection()`, but they still get privacy from their own frontmatter and the root `meta.json`. A folder whose `meta.json` has no `root: true` is treated as an intentional non-section folder and is left out without a warning.
+A top-level folder without a `meta.json` can't be a section. This includes folders inside top-level groups. Its pages still get privacy from their own frontmatter and the root `meta.json`. A folder whose `meta.json` has no `root: true` is treated as an intentional non-section folder and is left out without a warning.
 
 @weaponsforge<br>
 20261018
