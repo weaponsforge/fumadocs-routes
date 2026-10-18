@@ -1,24 +1,27 @@
 {
-  "name": "generate-fumadocs-routes",
-  "version": "1.0.0",
+  "name": "fumadocs-routes",
+  "version": "1.1.0",
   "description": "Generates Next.js/Fumadocs public/private routes listing from content/docs",
   "keywords": [
     "fumadocs",
     "next.js"
   ],
-  "homepage": "https://github.com/weaponsforge/generate-fumadocs-routes#readme",
+  "homepage": "https://github.com/weaponsforge/fumadocs-routes#readme",
   "bugs": {
-    "url": "https://github.com/weaponsforge/generate-fumadocs-routes/issues"
+    "url": "https://github.com/weaponsforge/fumadocs-routes/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/weaponsforge/generate-fumadocs-routes.git"
+    "url": "git+https://github.com/weaponsforge/fumadocs-routes.git"
   },
   "license": "MIT",
   "author": "weaponsforge",
   "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "fumadocs-routes": "dist/scripts/generate/cli.js"
+  },
   "engines": {
     "node": ">=24"
   },
@@ -34,7 +37,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "node ./dist/scripts/envinfo.js",
+    "start": "node ./dist/scripts/generate/cli.js",
     "dev": "vitest",
     "build": "tsc -p tsconfig.prod.json && tsc-alias",
     "types:check": "tsc -p tsconfig.json --noEmit",
@@ -50,7 +53,9 @@
     "docker:dev:win": "export CHOKIDAR_USEPOLLING=1 && export CHOKIDAR_INTERVAL=1000 && vitest",
     "docker:watch:win": "tsc -p tsconfig.json --watch --watchFile dynamicPriorityPolling --watchDirectory dynamicPriorityPolling",
     "docker:test:ui:win": "export CHOKIDAR_USEPOLLING=1 && export CHOKIDAR_INTERVAL=1000 && npm run docker:test:ui",
-    "info": "tsx ./src/scripts/envinfo.ts"
+    "info": "tsx ./src/scripts/envinfo.ts",
+    "routes:generate": "node ./dist/scripts/generate/cli.js",
+    "routes:check": "node ./dist/scripts/generate/cli.js --strict"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -64,5 +69,8 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
     "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "js-yaml": "^5.5.0"
   }
 }
