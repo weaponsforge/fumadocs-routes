@@ -1,0 +1,12 @@
+# Docker compose file for production distribution mode
+# Transpiles the app as JS files into a container's "/dist" directory
+services:
+  gen-fumadocs-routes:
+    container_name: gen-fumadocs-routes
+    image: weaponsforge/gen-fumadocs-routes:latest
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: production
+    stdin_open: true
+    tty: true

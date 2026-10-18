@@ -1,0 +1,35 @@
+name: Run CI Tests
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  lint-app:
+    name: Lint App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+
+      - name: Use NodeJS v24.11.0
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.0
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install Dependencies
+        run: |
+          cd app
+          npm ci
+
+      - name: Lint
+        run: |
+          cd app
+          npm run lint
+
+      - name: Check Types
+        run: |
+          cd app
+          npm run types:check

@@ -1,0 +1,56 @@
+{
+  "name": "generate-fumadocs-routes",
+  "version": "1.0.0",
+  "description": "Generates Next.js/Fumadocs public/private routes listing from content/docs",
+  "keywords": [
+    "fumadocs",
+    "next.js"
+  ],
+  "homepage": "https://github.com/weaponsforge/generate-fumadocs-routes#readme",
+  "bugs": {
+    "url": "https://github.com/weaponsforge/generate-fumadocs-routes/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weaponsforge/generate-fumadocs-routes.git"
+  },
+  "license": "MIT",
+  "author": "weaponsforge",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.prod.json && tsc-alias",
+    "types:check": "tsc -p tsconfig.json --noEmit",
+    "watch": "tsc -p tsconfig.json --watch",
+    "lint": "eslint \"src/**/*.ts\" *.mjs",
+    "lint:fix": "eslint \"src/**/*.ts\" *.mjs --fix",
+    "docker:debug": "export IS_DOCKER=true && node --inspect=0.0.0.0:9229 --import tsx src/scripts/envinfo.ts",
+    "docker:watch:win": "tsc -p tsconfig.json --watch --watchFile dynamicPriorityPolling --watchDirectory dynamicPriorityPolling",
+    "info": "tsx ./src/scripts/envinfo.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "tsc-alias": "^1.9.8",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
