@@ -37,6 +37,7 @@ The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `me
 1. [typescript](https://www.npmjs.com/package/typescript) `v6.0.3` - Compile-time error checker
 2. [tsx](https://www.npmjs.com/package/tsx) `v4.23.15` - Runs TS files in development mode
 3. [vitest](https://www.npmjs.com/package/vitest) `v5.0.5` - Runs tests
+4. [js-yaml]() `v5.5.0` - Parses MDX frontmatter
 
 </details>
 <br>
