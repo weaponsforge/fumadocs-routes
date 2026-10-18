@@ -33,3 +33,42 @@ jobs:
         run: |
           cd app
           npm run types:check
+
+  test-app:
+    name: Unit/Integration Tests
+    needs: lint-app
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+
+      - name: Use NodeJS v24.11.0
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.0
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install Dependencies
+        run: |
+          cd app
+          npm ci
+
+      - name: Test
+        run: |
+          cd app
+          npm test
+
+      - name: Upload Test Results
+        id: upload-report
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-report
+          path: app/.vitest/
+
+      - name: Link HTML report
+        run: echo "::notice title=Vitest HTML report::$REPORT_URL"
+        env:
+          REPORT_URL: https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }}
