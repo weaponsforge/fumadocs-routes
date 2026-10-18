@@ -1,8 +1,8 @@
 # Docker compose file for local development mode
 services:
-  gen-fumadocs-routes-dev:
-    container_name: gen-fumadocs-routes-dev
-    image: weaponsforge/gen-fumadocs-routes:dev
+  fumadocs-routes-dev:
+    container_name: fumadocs-routes-dev
+    image: weaponsforge/fumadocs-routes:dev
     build:
       context: ./app
       dockerfile: Dockerfile
