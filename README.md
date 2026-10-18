@@ -133,7 +133,16 @@ npm install
 npm run build
 ```
 
-#### 4. Run available scripts.
+#### 4. Generate routes of the sample content.
+
+Sample content in `content/docs/`. This script generates a `docs-routes.json` in the root project directory.
+
+```sh
+npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
+npm run routes:generate
+```
+
+#### 5. Run available scripts.
 
 See the [Available Scripts](#-available-scripts) section for more information.
 <br>
