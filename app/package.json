@@ -34,12 +34,13 @@
     "LICENSE"
   ],
   "scripts": {
+    "start": "node ./dist/scripts/envinfo.js",
     "build": "tsc -p tsconfig.prod.json && tsc-alias",
     "types:check": "tsc -p tsconfig.json --noEmit",
     "watch": "tsc -p tsconfig.json --watch",
     "lint": "eslint \"src/**/*.ts\" *.mjs",
     "lint:fix": "eslint \"src/**/*.ts\" *.mjs --fix",
-    "docker:debug": "export IS_DOCKER=true && node --inspect=0.0.0.0:9229 --import tsx src/scripts/envinfo.ts",
+    "docker:debug": "export IS_DOCKER=true && node --inspect=0.0.0.0:9229 --import tsx src/scripts/sample.ts",
     "docker:watch:win": "tsc -p tsconfig.json --watch --watchFile dynamicPriorityPolling --watchDirectory dynamicPriorityPolling",
     "info": "tsx ./src/scripts/envinfo.ts"
   },
