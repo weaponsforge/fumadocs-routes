@@ -23,7 +23,7 @@ export const walk = ({
   urlSegments,
   inheritedPrivate,
   isCovered,
-}: IWalkParams) => {
+}: IWalkParams): void => {
   const { reader, routes, contentDir } = context
 
   const name = path.basename(dir)

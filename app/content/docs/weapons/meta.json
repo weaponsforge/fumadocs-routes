@@ -1,0 +1,14 @@
+{
+  "title": "Weapons",
+  "root": true,
+  "description": "MU Online weapons",
+  "icon": "Swords",
+  "pages": [
+    "---Guide---",
+    "index",
+    "...(guide)",
+    "---Types---",
+    "...(types)",
+    "..."
+  ]
+}

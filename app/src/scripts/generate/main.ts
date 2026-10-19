@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import { Diagnostics } from '@/lib/classes/diagnostics.js'
 import { Reader } from '@/lib/classes/reader.js'
-import { RoutesCollection } from '@/lib/classes/routes-collection.js'
+import { RoutesCollection } from '@/lib/classes/routes.js'
 import {
   CONTENT_DIR,
   ROOT_DIR,

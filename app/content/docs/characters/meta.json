@@ -1,0 +1,14 @@
+{
+  "title": "Characters",
+  "root": true,
+  "description": "MU Online characters",
+  "icon": "FileUser",
+  "pages": [
+    "---Guide---",
+    "index",
+    "...(guide)",
+    "---Basic Classes---",
+    "...(classes)",
+    "..."
+  ]
+}
