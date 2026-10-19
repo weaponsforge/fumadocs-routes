@@ -1,8 +1,10 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs`.
+Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs`. This lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
+
+> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`.
 
 > [!IMPORTANT]
 > Fumadocs doesn't have a `private` frontmatter or meta field by default. The `private` flags used in [`content/docs/`](content/docs/) are a custom added field, added by extending the docs schemas in a Fumadocs project's `source.config.ts`, for example:
@@ -219,7 +221,7 @@ Watches file changes in `.ts` files using the `tsc --watch` option.
 
 ### `npm run build`
 
-Builds JavaScript, `.d.ts` declaration files, and map files from the TypeScript source files in the `/src` directory.
+Builds JavaScript, `.d.ts` declaration files, and map files from the TypeScript source files in the `/src/dist` directory.
 
 ### `npm start`
 
@@ -270,6 +272,10 @@ Fixes lint errors in TypeScript files.
 ### `npm run info`
 
 Logs the installed Node.js and npm version, environment platform, architecture and V8 version.
+
+### `npm run verify`
+
+Combines `lint` + `types:check` + `test` in one command.
 
 </details>
 <br>
@@ -416,22 +422,23 @@ The package also exports `findRootDir()`, `ROOT_DIR`, `CONTENT_DIR`, `OUTPUT_FIL
 
 ```text
 app/
-├── content/docs/                     # Sample input, default --docs
+├── docs/                        # Codebase patterns and guidelines
+├── content/docs/                # Sample input, default --docs
 ├── src/
-│   ├── index.ts                      # Package exports
+│   ├── index.ts                 # Package exports
 │   ├── lib/
 │   │   ├── classes/
-│   │   │   ├── diagnostics.ts        # Collects and prints warnings/errors
-│   │   │   ├── reader.ts             # Reads meta.json and frontmatter
-│   │   │   └── routes-collection.ts  # Accumulates and sorts the lists
-│   │   ├── constants.ts              # Paths, regexes, flags
-│   │   ├── section.ts                # Builds sections and section_labels
-│   │   ├── types.ts                  # Shared types
-│   │   ├── utils.ts                  # Small helper utility functions
-│   │   └── walk.ts                   # Builds private_sections, public_exceptions, private_pages
+│   │   │   ├── diagnostics.ts   # Collects and prints warnings/errors
+│   │   │   ├── reader.ts        # Reads meta.json and frontmatter
+│   │   │   └── routes.ts        # Accumulates and sorts the lists
+│   │   ├── constants.ts         # Paths, regexes, flags
+│   │   ├── section.ts           # Builds sections and section_labels
+│   │   ├── types.ts             # Shared types
+│   │   ├── utils.ts             # Small helper utility functions
+│   │   └── walk.ts              # Builds private_sections, public_exceptions, private_pages
 │   └── scripts/generate/
-│       ├── cli.ts                    # CLI entry (bin)
-│       └── main.ts                   # generate(): runs the steps, writes the JSON
+│       ├── cli.ts               # CLI entry (bin)
+│       └── main.ts              # generate(): runs the steps, writes the JSON
 ├── package.json
 └── tsconfig.json
 ```

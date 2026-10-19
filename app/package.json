@@ -1,6 +1,6 @@
 {
   "name": "fumadocs-routes",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generates Next.js/Fumadocs public/private routes listing from content/docs",
   "keywords": [
     "fumadocs",
@@ -46,6 +46,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" *.mjs --fix",
     "test": "vitest run",
     "test:ui": "vitest --ui",
+    "verify": "npm run lint && npm run types:check && npm test",
     "report:view": "vite preview --outDir .vitest",
     "docker:report:view": "vite preview --outDir .vitest --host 0.0.0.0",
     "docker:test:ui": "vitest --ui --api.port 51204 --api.host 0.0.0.0",
