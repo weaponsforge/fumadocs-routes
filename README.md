@@ -4,6 +4,8 @@ Generates `docs-routes.json` containing a list of root docs sections + labels, p
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
+> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`.
+
 > [!IMPORTANT]
 > Fumadocs doesn't have a `private` frontmatter or meta field by default. The `private` flags used in [`content/docs/`](content/docs/) are a custom added field, added by extending the docs schemas in a Fumadocs project's `source.config.ts`, for example:
 
