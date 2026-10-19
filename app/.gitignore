@@ -24,6 +24,7 @@ README.md
 !.env.example
 !package.json
 !package-lock.json
+!AGENTS.md
 !CLAUDE.md
 !content/**/*.md
 !content/**/*.json
