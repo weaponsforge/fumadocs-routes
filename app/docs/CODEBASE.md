@@ -31,7 +31,7 @@ app/
 
 Contains shared library scripts, classes and utilities. Heavy logic decomposed to separate concerns.
 
-#### 2. scripts/<script-name>/ compose related code
+#### 2. `scripts/<script-name>/` compose related code
 
 Main scripts entry point (bin), callable from package.json - "scripts"
 
@@ -42,6 +42,7 @@ It exports reusable library code.
 ### Benefits of using this structure
 
 - **Scales cleanly** - You don’t end up with 200 files in one directory.
+- **Promotes readability** - You don't end up with 2000+ lines of code in one file.
 - **Encourages separation of concerns** - library + scripts (main program entrypoint) composition
 
 ## Path Aliases
@@ -56,9 +57,7 @@ Follow these path aliases in `tsconfig.json`. Use path aliases when importing co
 
 ## ESLint Rules
 
-Check and enforce the following ESLint rules for code correctness, naming, unused variables:
-
-<details>
+Check and enforce the following ESLint rules for code formatting, correctness, naming, unused variables:
 
 ```js
 rules: {
