@@ -1,6 +1,6 @@
 export { Diagnostics } from '@/lib/classes/diagnostics.js'
 export { Reader } from '@/lib/classes/reader.js'
-export { RoutesCollection } from '@/lib/classes/routes-collection.js'
+export { RoutesCollection } from '@/lib/classes/routes.js'
 
 export { collectSections } from '@/lib/section.js'
 export { generate } from '@/scripts/generate/main.js'

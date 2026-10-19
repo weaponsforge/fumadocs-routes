@@ -7,22 +7,22 @@ export class Diagnostics {
   private readonly warnings: string[] = []
   private readonly errors: string[] = []
 
-  addWarning (message: string) {
+  addWarning (message: string): void {
     this.warnings.push(message)
   }
 
-  addError (message: string) {
+  addError (message: string): void {
     this.errors.push(message)
   }
 
-  hasErrors () {
+  hasErrors (): boolean {
     return this.errors.length > 0
   }
 
   /**
    * Prints the warnings, then the errors, to stderr
    */
-  flush () {
+  flush (): void {
     for (const warning of this.warnings) {
       console.warn(`${PREFIX} warning: ${warning}`)
     }

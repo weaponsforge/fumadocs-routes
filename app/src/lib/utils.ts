@@ -31,7 +31,7 @@ export const findRootDir = (startDir: string = process.cwd()): string => {
  * @param {string} [rootDir] - folder to make the path relative to, defaults to `findRootDir()`
  * @returns {string} eg. `content/docs/secrets/meta.json`
  */
-export const toPosix = (filePath: string, rootDir: string = findRootDir()) => {
+export const toPosix = (filePath: string, rootDir: string = findRootDir()): string => {
   return path.relative(rootDir, filePath).split(path.sep).join('/')
 }
 
@@ -41,7 +41,7 @@ export const toPosix = (filePath: string, rootDir: string = findRootDir()) => {
  * @param {string} name - folder name (not a path)
  * @returns {boolean}
  */
-export const isGroup = (name: string) => {
+export const isGroup = (name: string): boolean => {
   return /^\(.+\)$/.test(name)
 }
 
@@ -59,7 +59,7 @@ export const isNonEmptyString = (value: unknown): value is string => {
  * @param {string[]} segments - URL segments, eg. `['characters', 'elf']`
  * @returns {string} eg. `characters/elf`, or `''` for the docs root
  */
-export const joinSlug = (segments: string[]) => {
+export const joinSlug = (segments: string[]): string => {
   return segments.filter(Boolean).join('/')
 }
 
@@ -68,7 +68,7 @@ export const joinSlug = (segments: string[]) => {
  * @param {unknown} error - value from a `catch` clause
  * @returns {string}
  */
-export const getErrorMessage = (error: unknown) => {
+export const getErrorMessage = (error: unknown): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
@@ -88,7 +88,7 @@ export const toRawData = (data: unknown): RawData => {
  * @param {string[]} list - slugs or section names
  * @returns {string[]}
  */
-export const sorted = (list: string[]) => {
+export const sorted = (list: string[]): string[] => {
   return [...new Set(list)].sort()
 }
 
@@ -98,6 +98,6 @@ export const sorted = (list: string[]) => {
  * @param {string[]} list - slugs
  * @returns {string} eg. `secrets, stats-calculator`
  */
-export const formatList = (list: string[]) => {
+export const formatList = (list: string[]): string => {
   return list.map((slug) => slug || '(root)').join(', ') || '-'
 }

@@ -1,6 +1,7 @@
 node_modules/
 dist/
 build/
+logs/
 .vitest/
 .git
 *.zip
@@ -23,3 +24,7 @@ README.md
 !.env.example
 !package.json
 !package-lock.json
+!CLAUDE.md
+!content/**/*.md
+!content/**/*.json
+!docs/**/*.md

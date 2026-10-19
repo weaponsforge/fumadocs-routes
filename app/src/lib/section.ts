@@ -43,7 +43,7 @@ export const collectSections = ({
   routes,
   contentDir,
   strict = isStrict,
-}: GeneratorContext) => {
+}: GeneratorContext): void => {
   for (const dir of listTopLevelFolders(contentDir)) {
     const folder = path.basename(dir)
     const relativeDir = toPosix(dir)

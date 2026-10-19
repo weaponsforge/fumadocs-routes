@@ -13,20 +13,20 @@ export class RoutesCollection {
   private readonly publicExceptions: string[] = []
   private readonly privatePages: string[] = []
 
-  addSection (slug: string, label: string) {
+  addSection (slug: string, label: string): void {
     this.sections.push(slug)
     this.sectionLabels[slug] = label
   }
 
-  addPrivateSection (slug: string) {
+  addPrivateSection (slug: string): void {
     this.privateSections.push(slug)
   }
 
-  addPublicException (slug: string) {
+  addPublicException (slug: string): void {
     this.publicExceptions.push(slug)
   }
 
-  addPrivatePage (slug: string) {
+  addPrivatePage (slug: string): void {
     this.privatePages.push(slug)
   }
 
