@@ -1,6 +1,6 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. This is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
+Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
