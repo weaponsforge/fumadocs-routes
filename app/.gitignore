@@ -30,3 +30,6 @@ README.md
 !content/**/*.md
 !content/**/*.json
 !docs/**/*.md
+
+# Files written by tests
+src/__tests__/artifacts/
