@@ -7,6 +7,7 @@ import { FRONTMATTER_REGEX } from '@/lib/constants.js'
 import {
   findRootDir,
   getErrorMessage,
+  stripBom,
   toPosix,
   toRawData,
 } from '@/lib/utils.js'
@@ -25,6 +26,16 @@ export class Reader {
   ) {}
 
   /**
+   * Reads a file as UTF-8 text without a leading BOM,
+   * which would hide the frontmatter and break `JSON.parse`.
+   */
+  private readText (file: string, isStripBom: boolean = true): string {
+    return isStripBom
+      ? stripBom(readFileSync(file, 'utf8'))
+      : readFileSync(file, 'utf8')
+  }
+
+  /**
    * Returns the parsed meta.json of a folder, or `null` if it has none.
    */
   readMeta (dir: string): RawData | null {
@@ -32,9 +43,12 @@ export class Reader {
     if (!existsSync(file)) return null
 
     try {
-      return toRawData(JSON.parse(readFileSync(file, 'utf8')))
+      return toRawData(
+        JSON.parse(this.readText(file)),
+      )
     } catch (error) {
-      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: invalid JSON (${getErrorMessage(error)})`)
+      const errMsg = `${toPosix(file, this.rootDir)}: invalid JSON (${getErrorMessage(error)})`
+      this.diagnostics.addError(errMsg)
 
       return {}
     }
@@ -44,13 +58,14 @@ export class Reader {
    * Returns the raw (not zod-parsed) frontmatter of a page.
    */
   readFrontmatter (file: string): RawData {
-    const yaml = readFileSync(file, 'utf8').match(FRONTMATTER_REGEX)?.[1]
-    if (yaml === undefined) return {}
-
     try {
+      const yaml = this.readText(file).match(FRONTMATTER_REGEX)?.[1]
+      if (yaml === undefined) return {}
+
       return toRawData(loadYaml(yaml))
     } catch (error) {
-      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: invalid frontmatter (${getErrorMessage(error)})`)
+      const errMsg = `${toPosix(file, this.rootDir)}: invalid frontmatter (${getErrorMessage(error)})`
+      this.diagnostics.addError(errMsg)
 
       return {}
     }
@@ -64,7 +79,8 @@ export class Reader {
     if (value === undefined) return undefined
 
     if (typeof value !== 'boolean') {
-      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: "private" must be true or false, got ${JSON.stringify(value)}`)
+      const errMsg = `${toPosix(file, this.rootDir)}: "private" must be true or false, got ${JSON.stringify(value)}`
+      this.diagnostics.addError(errMsg)
 
       return undefined
     }

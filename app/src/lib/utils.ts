@@ -73,6 +73,15 @@ export const getErrorMessage = (error: unknown): string => {
 }
 
 /**
+ * Removes a leading UTF-8 byte order mark (BOM), which some Windows editors add to files.
+ * @param {string} text - file contents
+ * @returns {string} the text without a leading BOM
+ */
+export const stripBom = (text: string): string => {
+  return text.startsWith('\uFEFF') ? text.slice(1) : text
+}
+
+/**
  * Normalizes parsed JSON or YAML to an object.
  * Non-object results (`null`, strings, numbers) become `{}`.
  * @param {unknown} data - parsed `meta.json` or frontmatter

@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 import { afterEach, describe, expect, test, vi } from 'vitest'
@@ -157,7 +157,27 @@ describe('readFrontmatter', () => {
     expect(errorsOf(diagnostics, spies)[0]).toContain('content/docs/a/b/meta.json')
   })
 
-  // The regex requires `---` at the first character, so a UTF-8 BOM drops the frontmatter
-  // and its `private` flag without any error. Enable once the BOM is stripped.
-  test.todo('strips a UTF-8 BOM before reading the frontmatter')
+  test('ignores a UTF-8 BOM before the JSON', () => {
+    const source = '\uFEFF{"root":true,"private":true}'
+    const { reader, docs, diagnostics } = setup({ 'meta.json': source })
+
+    expect(reader.readMeta(docs)).toEqual({ root: true, private: true })
+    expect(diagnostics.hasErrors()).toBe(false)
+  })
+
+  test('ignores a UTF-8 BOM before the frontmatter', () => {
+    const source = '\uFEFF---\ntitle: A\nprivate: true\n---\n\nBody\n'
+    const { reader, docs, diagnostics } = setup({ 'a.mdx': source })
+
+    expect(reader.readFrontmatter(path.join(docs, 'a.mdx'))).toEqual({ title: 'A', private: true })
+    expect(diagnostics.hasErrors()).toBe(false)
+  })
+
+  test('ignores a UTF-8 BOM combined with CRLF line endings', () => {
+    const source = '\uFEFF---\r\nprivate: true\r\n---\r\n\r\nBody\r\n'
+    const { reader, docs } = setup({ 'a.mdx': source })
+
+    expect(readFileSync(path.join(docs, 'a.mdx'), 'utf8')).toContain('\r\n')
+    expect(reader.readFrontmatter(path.join(docs, 'a.mdx'))).toEqual({ private: true })
+  })
 })

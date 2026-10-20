@@ -151,6 +151,26 @@ describe('private pages', () => {
 
     expect(result.privatePages).toEqual(['a/doc', 'a/doc2'])
   })
+
+  test('a private page saved with a UTF-8 BOM is still private', () => {
+    const result = runWalk({
+      'weapons/meta.json': createMeta({ root: true }),
+      'weapons/secret.mdx': `\uFEFF${createPage(true)}`,
+    })
+
+    expect(result.privatePages).toEqual(['weapons/secret'])
+    expect(result.hasErrors).toBe(false)
+  })
+
+  test('a private meta.json saved with a UTF-8 BOM still gates its folder', () => {
+    const result = runWalk({
+      'secrets/meta.json': `\uFEFF${createMeta({ private: true })}`,
+      'secrets/index.mdx': createPage(),
+    })
+
+    expect(result.privateSections).toEqual(['secrets'])
+    expect(result.hasErrors).toBe(false)
+  })
 })
 
 describe('group folders', () => {
