@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file gives agents guidance for working with code in this repository.
 
 ## Project Overview
 
@@ -42,7 +42,7 @@ Docker-only scripts (`docker:*`, `:win` = Windows WSL2 polling variants) are lis
 
 ## Architecture
 
-- `src/scripts/generate/cli.ts` is the `bin` entry. It parses `--docs/-p`, `--output/-o` and `--strict`, then calls `generate()`.
+- `src/scripts/generate/cli.ts` is the `bin` entry. It parses `--docs/-d`, `--output/-o` and `--strict`, then calls `generate()`.
 - `src/scripts/generate/main.ts` `generate()` builds a `GeneratorContext` (`Diagnostics`, `Reader`, `RoutesCollection`, `contentDir`, `strict`), runs `collectSections()` (`lib/section.ts`) and then `walk()` (`lib/walk.ts`), and writes the JSON.
 - `src/index.ts` holds the package's public exports. When you add or rename a public API, update it and the README's "From code" section.
 - **Error handling**: `Reader` and the collectors never throw on bad content. They call `diagnostics.addError()`/`addWarning()`. `generate()` prints everything at the end and throws if there were any errors. The CLI catches that and exits 1. Keep this pattern.
@@ -68,6 +68,7 @@ src/
 │   ├── cli.ts                    # CLI entry (bin)
 │   └── main.ts                   # generate(): runs the steps, writes the JSON
 └── __tests__/                    # Tests, mirroring src/
+    └── helpers/                  # Shared test helpers, eg. temp fixtures, mocks
 ```
 
 ## Output
@@ -118,7 +119,8 @@ A top-level folder without `meta.json` can't be a section, but its pages still g
 - `tsconfig.prod.json` excludes `src/__tests__/` from `dist/`. `types:check` still type-checks the tests.
 - Coverage is always on, and only counts `src/lib`, `src/scripts`, `src/types` and `src/utils`.
 - `content/docs/` is the sample fixture that covers every case (sections, private sections, a public exception, a private page, groups). See `content/README.md`. When you change it or the output rules, update the Output example here and in the README.
-- Pass the `generate()` inputs through `args`/`context` in tests (`contentDir`, `output`, `strict`). Module-level constants won't see later changes (see Gotchas).
+- Put reusable test helpers (temp fixture builders, console/stdout mocks) in `src/__tests__/helpers/`, and import them with `@/__tests__/helpers/...`. Don't redefine them in each test file.
+- Pass the `generate()` inputs through `args`/`context` in tests (`contentDir`, `output`, `strict`). Use `args.cwd` to set the root without `process.chdir`.
 - `npm run verify` (lint + types:check + test) and `npm run build` must both pass before a change is done. `verify` does not build, so run both.
 
 ## Conventions
@@ -141,7 +143,7 @@ A summary of [`docs/CODEBASE.md`](docs/CODEBASE.md) (see [Context Files](#contex
 
 ## Gotchas
 
-- **Import-time globals**: `ROOT_DIR` (the nearest folder with a `package.json`, searched upwards from `process.cwd()`), `CONTENT_DIR` and `isStrict` (`process.argv.includes('--strict')`) in `src/lib/constants.ts` are set when the module loads.
+- **No import-time globals**: `src/lib/constants.ts` holds only pure constants. `generate()` resolves `rootDir` (the nearest folder with a `package.json`, searched upwards from `args.cwd ?? process.cwd()`) and `strict` (`args.strict`, default false) once per run and passes them through `GeneratorContext`. Only `cli.ts` reads `process.argv`.
 - `findRootDir()` deliberately uses the working directory, not `import.meta`, because the package runs from a consumer's `node_modules`.
 - **Don't hand-edit generated files**: `dist/`, `.vitest/`, or the root `docs-routes.json` (regenerate it with `npm run routes:generate`).
 - **`.gitignore` ignores `*.md` and `*.json`** except `package*.json`, `CLAUDE.md`, `.md`/`.json` under `content/` and `.md` under `docs/`. A new `.md`/`.json` file elsewhere is untracked unless you add a `!` exception.

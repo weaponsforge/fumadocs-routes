@@ -9,7 +9,7 @@ const { values } = parseArgs({
   options: {
     docs: { // Path to the fumadocs "docs" folder eg., content/docs
       type: 'string',
-      short: 'p',
+      short: 'd',
     },
     output: { // Folder to write docs-routes.json into
       type: 'string',

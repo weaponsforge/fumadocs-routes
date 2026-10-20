@@ -21,6 +21,7 @@ app/
 |   │       ├── cli.ts                # CLI entry (bin)
 |   │       └── main.ts               # Script function building from lib/
 |   └── __tests__/                    # Tests, mirroring src/
+|       └── helpers/                  # Shared test helpers, eg. temp fixtures, mocks
 ├── tsconfig.json
 └── package.json
 ```
@@ -31,7 +32,7 @@ app/
 
 Contains shared library scripts, classes and utilities. Heavy logic decomposed to separate concerns.
 
-#### 2. scripts/<script-name>/ compose related code
+#### 2. `scripts/<script-name>/` compose related code
 
 Main scripts entry point (bin), callable from package.json - "scripts"
 
@@ -42,6 +43,7 @@ It exports reusable library code.
 ### Benefits of using this structure
 
 - **Scales cleanly** - You don’t end up with 200 files in one directory.
+- **Promotes readability** - You don't end up with 2000+ lines of code in one file.
 - **Encourages separation of concerns** - library + scripts (main program entrypoint) composition
 
 ## Path Aliases
@@ -56,9 +58,7 @@ Follow these path aliases in `tsconfig.json`. Use path aliases when importing co
 
 ## ESLint Rules
 
-Check and enforce the following ESLint rules for code correctness, naming, unused variables:
-
-<details>
+Check and enforce the following ESLint rules for code formatting, correctness, naming, unused variables:
 
 ```js
 rules: {
@@ -213,5 +213,6 @@ Run `npm run verify` and `npm run build` locally and in CI before merging.
 - Place test files in the `__tests__` folder mirroring the the component, hook, or script they test in `src/`.
 - Name test files to match the target module, using the suffix: `*.test.ts` or `*.test.tsx`.
   > **Example:** reader.ts → reader.test.ts
+- Put **reusable test helpers** (temp fixture builders, console/stdout mocks and similar setup code) in `src/__tests__/helpers/`, eg. `makeTree.ts`, instead of redefining them in each test file. Name helpers by what they do (eg., `makeTree`, `createPage`, `createMeta`) and import them with the `@/__tests__/helpers/` alias.
 - **selectively write tests** for critical or global components, features, or business logic as needed.
 - All code should pass `"npm test"` before commit.

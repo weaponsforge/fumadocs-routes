@@ -6,7 +6,7 @@ export { collectSections } from '@/lib/section.js'
 export { generate } from '@/scripts/generate/main.js'
 export { walk } from '@/lib/walk.js'
 
-export { ROOT_DIR, CONTENT_DIR, OUTPUT_FILE_NAME } from '@/lib/constants.js'
+export { DEFAULT_DOCS_PATH, OUTPUT_FILE_NAME } from '@/lib/constants.js'
 export { findRootDir } from '@/lib/utils.js'
 
 export type { IGenerateArgs, IGenerateRoutes } from '@/scripts/generate/main.js'

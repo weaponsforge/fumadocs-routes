@@ -15,6 +15,7 @@ logs/
 *.exe
 *.json
 *.md
+.claude/
 src/**/*.js
 __tests__/**/*.js
 
@@ -29,3 +30,6 @@ README.md
 !content/**/*.md
 !content/**/*.json
 !docs/**/*.md
+
+# Files written by tests
+src/__tests__/artifacts/
