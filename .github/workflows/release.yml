@@ -10,6 +10,8 @@ jobs:
     name: Lint and Test App
     if: github.event.release.target_commitish == 'main'
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v6
@@ -39,6 +41,19 @@ jobs:
         run: |
           cd app
           npm test
+
+      - name: Upload Test Results
+        id: upload-report
+        uses: actions/upload-artifact@v7
+        with:
+          path: app/.vitest/index.html
+          archive: false
+          include-hidden-files: true
+
+      - name: Link HTML report
+        run: echo "::notice title=Vitest HTML report::$REPORT_URL"
+        env:
+          REPORT_URL: ${{ steps.upload-report.outputs.artifact-url }}
 
   docker-build-push:
     name: Build and Push Docker Image
