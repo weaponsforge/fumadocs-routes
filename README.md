@@ -390,7 +390,7 @@ npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
 | Option | Description |
 | --- | --- |
 | `--docs`, `-d` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
-| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected, the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
+| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected,<br>the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
 | `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
 
 - `<root>` is the nearest folder with a `package.json`, searched from the working directory upwards.
@@ -452,18 +452,6 @@ app/
 ├── package.json
 └── tsconfig.json
 ```
-
-## Validation
-
-| Condition | Default | `--strict` |
-| --- | --- | --- |
-| `private` isn't a boolean | error, exit 1 | error, exit 1 |
-| Invalid `meta.json` JSON or frontmatter YAML | error, exit 1 | error, exit 1 |
-| Top-level folder (including one inside a top-level group) without `meta.json` | warning: the folder is left out of `sections` | error, exit 1 |
-| `content/docs` missing (e.g. Docker's `npm ci` stage) | warning: writes empty lists | warning: writes empty lists |
-| `--output` is a file path (an existing file, or ends in `.json`) | error, exit 1 | error, exit 1 |
-
-A top-level folder without a `meta.json` can't be a section. This includes folders inside top-level groups. Its pages still get privacy from their own frontmatter and the root `meta.json`. A folder whose `meta.json` has no `root: true` is treated as an intentional non-section folder and is left out without a warning.
 
 @weaponsforge<br>
 20261018
