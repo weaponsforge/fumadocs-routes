@@ -1,6 +1,6 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. This is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
+Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
@@ -389,7 +389,7 @@ npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
 
 | Option | Description |
 | --- | --- |
-| `--docs`, `-p` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
+| `--docs`, `-d` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
 | `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected, the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
 | `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
 
@@ -410,14 +410,17 @@ const routes: IDocsRoutes = generate({
   args: {
     docs: 'content/docs',
     output: 'public',
-    strict: true
+    strict: true,
+    cwd: process.cwd() // where to search upwards for the root package.json
   }
 })
 ```
 
+`strict` defaults to `false` and is never read from `process.argv` by the library. Only the CLI parses `--strict`.
+
 `generate()` writes the file and returns the route lists. On validation errors, it prints them to stderr and throws instead of exiting.
 
-The package also exports `findRootDir()`, `ROOT_DIR`, `CONTENT_DIR`, `OUTPUT_FILE_NAME`, the building blocks (`collectSections`, `walk`, `Reader`, `RoutesCollection`, `Diagnostics`) and the `GeneratorContext`, `IGenerateArgs`, `IGenerateRoutes` and `RawData` types.
+The package also exports `findRootDir()`, `DEFAULT_DOCS_PATH`, `OUTPUT_FILE_NAME`, the building blocks (`collectSections`, `walk`, `Reader`, `RoutesCollection`, `Diagnostics`) and the `GeneratorContext`, `IGenerateArgs`, `IGenerateRoutes` and `RawData` types.
 
 
 ## Layout
@@ -433,7 +436,7 @@ app/
 │   │   │   ├── diagnostics.ts   # Collects and prints warnings/errors
 │   │   │   ├── reader.ts        # Reads meta.json and frontmatter
 │   │   │   └── routes.ts        # Accumulates and sorts the lists
-│   │   ├── constants.ts         # Paths, regexes, flags
+│   │   ├── constants.ts         # Default paths, file name, regexes
 │   │   ├── section.ts           # Builds sections and section_labels
 │   │   ├── types.ts             # Shared types
 │   │   ├── utils.ts             # Small helper utility functions

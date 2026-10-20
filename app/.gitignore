@@ -15,6 +15,7 @@ logs/
 *.exe
 *.json
 *.md
+.claude/
 src/**/*.js
 __tests__/**/*.js
 

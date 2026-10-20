@@ -5,6 +5,7 @@ import { load as loadYaml } from 'js-yaml'
 
 import { FRONTMATTER_REGEX } from '@/lib/constants.js'
 import {
+  findRootDir,
   getErrorMessage,
   toPosix,
   toRawData,
@@ -18,7 +19,10 @@ import type { Diagnostics } from './diagnostics.js'
  * Parse and validation errors go to `diagnostics` instead of throwing.
  */
 export class Reader {
-  constructor (private readonly diagnostics: Diagnostics) {}
+  constructor (
+    private readonly diagnostics: Diagnostics,
+    private readonly rootDir: string = findRootDir(),
+  ) {}
 
   /**
    * Returns the parsed meta.json of a folder, or `null` if it has none.
@@ -30,7 +34,7 @@ export class Reader {
     try {
       return toRawData(JSON.parse(readFileSync(file, 'utf8')))
     } catch (error) {
-      this.diagnostics.addError(`${toPosix(file)}: invalid JSON (${getErrorMessage(error)})`)
+      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: invalid JSON (${getErrorMessage(error)})`)
 
       return {}
     }
@@ -46,7 +50,7 @@ export class Reader {
     try {
       return toRawData(loadYaml(yaml))
     } catch (error) {
-      this.diagnostics.addError(`${toPosix(file)}: invalid frontmatter (${getErrorMessage(error)})`)
+      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: invalid frontmatter (${getErrorMessage(error)})`)
 
       return {}
     }
@@ -60,7 +64,7 @@ export class Reader {
     if (value === undefined) return undefined
 
     if (typeof value !== 'boolean') {
-      this.diagnostics.addError(`${toPosix(file)}: "private" must be true or false, got ${JSON.stringify(value)}`)
+      this.diagnostics.addError(`${toPosix(file, this.rootDir)}: "private" must be true or false, got ${JSON.stringify(value)}`)
 
       return undefined
     }

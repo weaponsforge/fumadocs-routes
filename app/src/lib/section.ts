@@ -2,7 +2,6 @@ import { existsSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
 import {
-  isStrict,
   PAGE_EXTENSIONS,
 } from './constants.js'
 import { isGroup, isNonEmptyString, toPosix } from './utils.js'
@@ -42,11 +41,12 @@ export const collectSections = ({
   reader,
   routes,
   contentDir,
-  strict = isStrict,
+  rootDir,
+  strict = false,
 }: GeneratorContext): void => {
   for (const dir of listTopLevelFolders(contentDir)) {
     const folder = path.basename(dir)
-    const relativeDir = toPosix(dir)
+    const relativeDir = toPosix(dir, rootDir)
     const meta = reader.readMeta(dir)
 
     if (!meta) {
