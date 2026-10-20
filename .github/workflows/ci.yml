@@ -62,10 +62,11 @@ jobs:
         id: upload-report
         uses: actions/upload-artifact@v7
         with:
-          name: vitest-report
-          path: app/.vitest/
+          path: app/.vitest/index.html
+          archive: false
+          include-hidden-files: true
 
       - name: Link HTML report
         run: echo "::notice title=Vitest HTML report::$REPORT_URL"
         env:
-          REPORT_URL: https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }}
+          REPORT_URL: ${{ steps.upload-report.outputs.artifact-url }}
