@@ -1,6 +1,6 @@
 {
   "name": "fumadocs-routes",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Generates Next.js/Fumadocs public/private routes listing from content/docs",
   "keywords": [
     "fumadocs",
