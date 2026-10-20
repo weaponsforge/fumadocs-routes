@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 
-const main = () => {
+export const envInfo = (): void => {
   console.log('Node version:', process.version)
   console.log('Platform:', process.platform)
   console.log('Arch:', process.arch)
@@ -12,5 +12,3 @@ const main = () => {
     console.log('npm version: unavailable')
   }
 }
-
-main()

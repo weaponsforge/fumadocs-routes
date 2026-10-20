@@ -4,15 +4,16 @@ import path from 'node:path'
 import { Diagnostics } from '@/lib/classes/diagnostics.js'
 import { Reader } from '@/lib/classes/reader.js'
 import { RoutesCollection } from '@/lib/classes/routes.js'
-import { DEFAULT_DOCS_PATH, OUTPUT_FILE_NAME } from '@/lib/constants.js'
 import { collectSections } from '@/lib/section.js'
+import { walk } from '@/lib/walk.js'
+import { DEFAULT_DOCS_PATH, OUTPUT_FILE_NAME } from '@/utils/constants.js'
 import {
   findRootDir,
   formatList,
   toPosix,
-} from '@/lib/utils.js'
-import { walk } from '@/lib/walk.js'
-import type { GeneratorContext, IDocsRoutes } from '@/lib/types.js'
+} from '@/utils/helpers.js'
+
+import type { GeneratorContext, IDocsRoutes } from '@/types.js'
 
 /** Relative paths resolve from the working directory */
 export interface IGenerateArgs {

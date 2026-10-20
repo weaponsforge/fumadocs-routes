@@ -10,12 +10,13 @@ Names enclosed in `<>` are placeholders.
 app/
 ├── src/
 |   ├── index.ts                      # Package exports
+|   ├── types.ts                      # Shared types
 |   ├── lib/                          # Library code
 |   │   ├── classes/                  # Stateful functions written as classes
+|   │   └── <method>.ts               # Function that accomplishes a single purpose
+|   ├── utils/
 |   │   ├── constants.ts              # Paths, regexes, flags, global variables
-|   │   ├── <method>.ts               # Function that accomplishes a single purpose
-|   │   ├── types.ts                  # Shared types
-|   │   └── utils.ts                  # Small helper utility functions
+|   │   └── helpers.ts                # Small helper utility functions
 |   ├── scripts/                      # NPM scripts (package.json - "scripts")
 |   |   └── <script-name>/
 |   │       ├── cli.ts                # CLI entry (bin)
@@ -168,13 +169,13 @@ Run `npm run verify` and `npm run build` locally and in CI before merging.
   ❌ const EMPTY_LENGTH = 0
   if (items.length === EMPTY_LENGTH) { ... }
   ```
-- Store global constants that are **shared across multiple codes** in `src/lib/constants.ts`.
+- Store global constants that are **shared across multiple codes** in `src/utils/constants.ts`.
 - Keep constants that are **only used by one module** local to that module rather than moving them to the global-level constants.ts.
 - Avoid creating constants for values that are used only once unless the name provides meaningful semantic context.
 
 ### TypeScript Types
 
-- **Global-shared types:** Create `types.ts` at `lib/` for types used by **multiple files**.
+- **Global-shared types:** Create `types.ts` at `src/` for types used by **multiple files**.
 - **Folder-internal types:** Create `types.ts` inside `classes/`, `scripts/`, `<script-name>/`, etc. when the types are used **only within that folder**.
 - **Keep types at the narrowest scope that satisfies their usage.** Do not create or move types to a shared `types.ts` solely for convenience.
 - **Promote a folder-internal type to the global-level `types.ts` when another folder needs to use it.**

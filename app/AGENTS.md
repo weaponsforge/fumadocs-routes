@@ -38,7 +38,7 @@ npx tsx src/scripts/<file>.ts   # Run a TS file without building
 
 `routes:generate`, `routes:check` and `npm start` run `dist/`, so run `npm run build` first or they use stale code.
 
-Docker-only scripts (`docker:*`, `:win` = Windows WSL2 polling variants) are listed in the README. Setting `IS_DOCKER` makes the CLI and `sample.ts` wait 5 seconds before running.
+Docker-only scripts (`docker:*`, `:win` = Windows WSL2 polling variants) are listed in the README. Setting `IS_DOCKER` makes the CLI and `sample/cli.ts` wait 5 seconds before running.
 
 ## Architecture
 
@@ -54,19 +54,24 @@ Docker-only scripts (`docker:*`, `:win` = Windows WSL2 polling variants) are lis
 content/docs/                     # Sample input, default --docs
 src/
 ├── index.ts                      # Package exports
+├── types.ts                      # Shared types
 ├── lib/
 │   ├── classes/
 │   │   ├── diagnostics.ts        # Collects and prints warnings/errors
 │   │   ├── reader.ts             # Reads meta.json and frontmatter
 │   │   └── routes.ts             # Accumulates and sorts the lists
-│   ├── constants.ts              # Paths, regexes, flags
 │   ├── section.ts                # Builds sections and section_labels
-│   ├── types.ts                  # Shared types
-│   ├── utils.ts                  # Small helper utility functions
 │   └── walk.ts                   # Builds private_sections, public_exceptions, private_pages
-├── scripts/generate/
-│   ├── cli.ts                    # CLI entry (bin)
-│   └── main.ts                   # generate(): runs the steps, writes the JSON
+├── utils/
+│   ├── constants.ts              # Paths, regexes, flags
+│   ├── envinfo.ts                # Prints runtime versions
+│   └── helpers.ts                # Small helper utility functions
+├── scripts/
+│   ├── envinfo/cli.ts            # Prints Node and npm versions
+│   ├── generate/
+│   │   ├── cli.ts                # CLI entry (bin)
+│   │   └── main.ts               # generate(): runs the steps, writes the JSON
+│   └── sample/                   # Docker debug sample (cli.ts, main.ts)
 └── __tests__/                    # Tests, mirroring src/
     └── helpers/                  # Shared test helpers, eg. temp fixtures, mocks
 ```
@@ -117,7 +122,7 @@ A leading UTF-8 BOM in `meta.json` and in page frontmatter is ignored (`Reader` 
 
 ## Testing and Verification
 
-- Tests live in `src/__tests__/`, mirroring `src/` (`src/scripts/sample.ts` → `src/__tests__/scripts/sample.test.ts`), named `*.test.ts`. Write them selectively, for critical or shared logic.
+- Tests live in `src/__tests__/`, mirroring `src/` (`src/scripts/sample/main.ts` → `src/__tests__/scripts/sample.test.ts`), named `*.test.ts`. Write them selectively, for critical or shared logic.
 - `tsconfig.prod.json` excludes `src/__tests__/` from `dist/`. `types:check` still type-checks the tests.
 - Coverage is always on, and only counts `src/lib`, `src/scripts`, `src/types` and `src/utils`.
 - `content/docs/` is the sample fixture that covers every case (sections, private sections, a public exception, a private page, groups). See `content/README.md`. When you change it or the output rules, update the Output example here and in the README.
@@ -131,11 +136,11 @@ A summary of [`docs/CODEBASE.md`](docs/CODEBASE.md) (see [Context Files](#contex
 
 - **Structure**: business logic goes in `src/lib/`, one single-purpose function per `<method>.ts`, with stateful code as classes in `lib/classes/`. Each `src/scripts/<script-name>/` folder has `cli.ts` (the bin entry) and `main.ts` (which composes `lib/`). `src/index.ts` only re-exports reusable library code. Avoid circular imports and exports.
 - **Formatting** (ESLint): no semicolons, single quotes, 2-space indent, trailing commas on multiline, LF line endings, a blank line before every `return`, no multiple empty lines.
-- **Imports**: use the `@/` alias (`@/*` → `src/*`) and put `.js` on every relative and `@/` import (`'@/lib/utils.js'`), which `NodeNext` requires. Group the imports in this order, with one blank line between groups and A-Z sorting within each: Node built-ins, external packages, internal/relative, then `import type` lines. Leave one blank line after the import block. ESLint does not check any of this, so follow it by hand.
+- **Imports**: use the `@/` alias (`@/*` → `src/*`) and put `.js` on every relative and `@/` import (`'@/utils/helpers.js'`), which `NodeNext` requires. Group the imports in this order, with one blank line between groups and A-Z sorting within each: Node built-ins, external packages, internal/relative, then `import type` lines. Leave one blank line after the import block. ESLint does not check any of this, so follow it by hand.
 - **Functions**: write helpers and utilities as arrow functions (`export const fn = (...) => {}`). Use `function` declarations only for specific cases. Class methods put a space before the parentheses (`addError (message: string) {`).
-- **Types**: always type parameters and return values. Avoid `any` (prefer `unknown` or `Record`). Keep types at the narrowest scope: a folder-local `types.ts` first, moved to `src/lib/types.ts` only when another folder needs them. Interfaces use an `I` prefix (`IDocsRoutes`).
+- **Types**: always type parameters and return values. Avoid `any` (prefer `unknown` or `Record`). Keep types at the narrowest scope: a folder-local `types.ts` first, moved to `src/types.ts` only when another folder needs them. Interfaces use an `I` prefix (`IDocsRoutes`).
 - **Naming**: camelCase for variables, functions, files and folders. PascalCase for types, interfaces, enums and Zod schemas. ALL_CAPS for meaningful, repeated or config-like constants, but not for trivial literals. File suffixes: `*.schema.ts`, `*.enum.ts`, `*.interface.ts`, `*.types.ts` (mixed).
-- **Constants**: shared constants go in `src/lib/constants.ts`. Keep single-module constants inside that module.
+- **Constants**: shared constants go in `src/utils/constants.ts`. Keep single-module constants inside that module.
 - **Control flow**: return early as soon as a condition isn't met.
 - **File size**: aim for under about 200 lines per file. Split a file only when that gives cohesive modules, not just to hit the number.
 - **Docs**: write short JSDoc (`@param {type} name - description`, `@returns`) for functions, types and interfaces. Keep inline comments minimal and use descriptive names instead.
@@ -145,7 +150,7 @@ A summary of [`docs/CODEBASE.md`](docs/CODEBASE.md) (see [Context Files](#contex
 
 ## Gotchas
 
-- **No import-time globals**: `src/lib/constants.ts` holds only pure constants. `generate()` resolves `rootDir` (the nearest folder with a `package.json`, searched upwards from `args.cwd ?? process.cwd()`) and `strict` (`args.strict`, default false) once per run and passes them through `GeneratorContext`. Only `cli.ts` reads `process.argv`.
+- **No import-time globals**: `src/utils/constants.ts` holds only pure constants. `generate()` resolves `rootDir` (the nearest folder with a `package.json`, searched upwards from `args.cwd ?? process.cwd()`) and `strict` (`args.strict`, default false) once per run and passes them through `GeneratorContext`. Only `cli.ts` reads `process.argv`.
 - `findRootDir()` deliberately uses the working directory, not `import.meta`, because the package runs from a consumer's `node_modules`.
 - **Don't hand-edit generated files**: `dist/`, `.vitest/`, or the root `docs-routes.json` (regenerate it with `npm run routes:generate`).
 - **`.gitignore` ignores `*.md` and `*.json`** except `package*.json`, `CLAUDE.md`, `.md`/`.json` under `content/` and `.md` under `docs/`. A new `.md`/`.json` file elsewhere is untracked unless you add a `!` exception.

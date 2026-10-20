@@ -1,4 +1,4 @@
-export const sum = (a: number, b: number): number => a + b
+import { sum } from './main.js'
 
 const main = () => {
   const a = sum(1, 2)

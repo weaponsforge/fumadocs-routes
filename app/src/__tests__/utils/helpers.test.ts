@@ -16,7 +16,7 @@ import {
   stripBom,
   toPosix,
   toRawData,
-} from '@/lib/utils.js'
+} from '@/utils/helpers.js'
 
 describe('isGroup', () => {
   test.each(['(classes)', '(a)', '(my group)'])('%s is a group', (name) => {

@@ -1,6 +1,6 @@
-import type { Diagnostics } from './classes/diagnostics.js'
-import type { Reader } from './classes/reader.js'
-import type { RoutesCollection } from './classes/routes.js'
+import type { Diagnostics } from '@/lib/classes/diagnostics.js'
+import type { Reader } from '@/lib/classes/reader.js'
+import type { RoutesCollection } from '@/lib/classes/routes.js'
 
 /**
  * Parsed `meta.json` or frontmatter, before any validation
