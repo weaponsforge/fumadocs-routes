@@ -57,4 +57,11 @@ export default defineConfig([
       ],
     },
   },
+  // Test files grow with their cases; splitting them hurts readability.
+  {
+    files: ['src/__tests__/**', '**/*.test.{ts,tsx}'],
+    rules: {
+      'max-lines': 'off',
+    },
+  },
 ])

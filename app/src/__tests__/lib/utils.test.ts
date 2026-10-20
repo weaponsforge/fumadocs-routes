@@ -13,6 +13,7 @@ import {
   isNonEmptyString,
   joinSlug,
   sorted,
+  stripBom,
   toPosix,
   toRawData,
 } from '@/lib/utils.js'
@@ -157,5 +158,20 @@ describe('getErrorMessage', () => {
     expect(getErrorMessage('plain')).toBe('plain')
     expect(getErrorMessage(42)).toBe('42')
     expect(getErrorMessage(null)).toBe('null')
+  })
+})
+
+describe('stripBom', () => {
+  test('removes a leading BOM', () => {
+    expect(stripBom('\uFEFF---\nprivate: true')).toBe('---\nprivate: true')
+  })
+
+  test('leaves text without a BOM unchanged', () => {
+    expect(stripBom('---\nprivate: true')).toBe('---\nprivate: true')
+    expect(stripBom('')).toBe('')
+  })
+
+  test('removes only one leading BOM and keeps a BOM inside the text', () => {
+    expect(stripBom('\uFEFFa\uFEFFb')).toBe('a\uFEFFb')
   })
 })
