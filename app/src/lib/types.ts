@@ -27,7 +27,9 @@ export interface GeneratorContext {
   routes: RoutesCollection
   /** Absolute path of the Fumadocs docs folder, eg. `<root>/content/docs` */
   contentDir: string
-  /** Treat a top-level folder without `meta.json` as an error. Defaults to the `--strict` CLI flag */
+  /** Absolute path of the root folder (nearest `package.json`), used for relative paths in messages */
+  rootDir: string
+  /** Treat a top-level folder without `meta.json` as an error. Default: false */
   strict?: boolean
 }
 

@@ -4,13 +4,10 @@ import path from 'node:path'
 import { Diagnostics } from '@/lib/classes/diagnostics.js'
 import { Reader } from '@/lib/classes/reader.js'
 import { RoutesCollection } from '@/lib/classes/routes.js'
-import {
-  CONTENT_DIR,
-  ROOT_DIR,
-  OUTPUT_FILE_NAME,
-} from '@/lib/constants.js'
+import { DEFAULT_DOCS_PATH, OUTPUT_FILE_NAME } from '@/lib/constants.js'
 import { collectSections } from '@/lib/section.js'
 import {
+  findRootDir,
   formatList,
   toPosix,
 } from '@/lib/utils.js'
@@ -23,7 +20,9 @@ export interface IGenerateArgs {
   docs?: string;
   /** Folder for `docs-routes.json`. Default: `<root>` */
   output?: string;
-  /** Error on top-level folders without `meta.json`. Default: `--strict` flag */
+  /** Folder to search upwards from for the root `package.json`. Default: `process.cwd()` */
+  cwd?: string;
+  /** Error on top-level folders without `meta.json`. Default: false */
   strict?: boolean;
 }
 
@@ -34,17 +33,18 @@ export interface IGenerateRoutes {
 
 /**
  * Resolves the output folder and checks that it is not a file path.
- * @param {string} [outputDir] - folder from `--output`, defaults to `ROOT_DIR`
+ * @param {string} rootDir - root folder, the default output folder
+ * @param {string} [outputDir] - folder from `--output`, defaults to `rootDir`
  * @throws {Error} when the path is an existing file or ends in `.json`
  * @returns {string} absolute path of `docs-routes.json` in that folder
  */
-const resolveOutputFile = (outputDir: string = ROOT_DIR) => {
+const resolveOutputFile = (rootDir: string, outputDir: string = rootDir) => {
   const dir = path.resolve(outputDir)
   const isFile = existsSync(dir) && !statSync(dir).isDirectory()
 
   if (isFile || path.extname(dir).toLowerCase() === '.json') {
     throw new Error(
-      `[routes:generate] --output expects a folder, got ${toPosix(dir)}. ` +
+      `[routes:generate] --output expects a folder, got ${toPosix(dir, rootDir)}. ` +
       `The file is always named ${OUTPUT_FILE_NAME}.`,
     )
   }
@@ -66,16 +66,18 @@ const resolveOutputFile = (outputDir: string = ROOT_DIR) => {
  * @returns {IDocsRoutes} the written route lists
  */
 export const generate = ({ context, args = {} }: IGenerateRoutes = {}): IDocsRoutes => {
-  const contentDir = path.resolve(args.docs ?? context?.contentDir ?? CONTENT_DIR)
-  const outputFile = resolveOutputFile(args.output)
+  const rootDir = findRootDir(args.cwd ?? process.cwd())
+  const contentDir = path.resolve(args.docs ?? context?.contentDir ?? path.join(rootDir, DEFAULT_DOCS_PATH))
+  const outputFile = resolveOutputFile(rootDir, args.output)
   const diagnostics = context?.diagnostics ?? new Diagnostics()
 
   const localContext: GeneratorContext = {
     diagnostics,
-    reader: context?.reader ?? new Reader(diagnostics),
+    reader: context?.reader ?? new Reader(diagnostics, rootDir),
     routes: context?.routes ?? new RoutesCollection(),
     contentDir,
-    strict: args.strict ?? context?.strict,
+    rootDir,
+    strict: args.strict ?? context?.strict ?? false,
   }
 
   if (existsSync(contentDir)) {
@@ -89,7 +91,7 @@ export const generate = ({ context, args = {} }: IGenerateRoutes = {}): IDocsRou
       isCovered: false,
     })
   } else {
-    diagnostics.addWarning(`${toPosix(contentDir)} not found, writing empty route lists`)
+    diagnostics.addWarning(`${toPosix(contentDir, rootDir)} not found, writing empty route lists`)
   }
 
   diagnostics.flush()
@@ -104,7 +106,7 @@ export const generate = ({ context, args = {} }: IGenerateRoutes = {}): IDocsRou
   writeFileSync(outputFile, `${JSON.stringify(output, null, 2)}\n`)
 
   process.stdout.write([
-    `[routes:generate] wrote ${toPosix(outputFile)}`,
+    `[routes:generate] wrote ${toPosix(outputFile, rootDir)}`,
     `  sections (${output.sections.length}): ${formatList(output.sections)}`,
     `  private_sections (${output.private_sections.length}): ${formatList(output.private_sections)}`,
     `  public_exceptions (${output.public_exceptions.length}): ${formatList(output.public_exceptions)}`,
