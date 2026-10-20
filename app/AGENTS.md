@@ -113,6 +113,8 @@ Slugs follow Fumadocs URLs: `(group)` segments, the `.mdx`/`.md` extension and a
 
 A top-level folder without `meta.json` can't be a section, but its pages still get privacy from their own frontmatter and the root `meta.json`. A folder whose `meta.json` has no `root: true` is an intentional non-section folder, so it is left out without a warning.
 
+A leading UTF-8 BOM in `meta.json` and in page frontmatter is ignored (`Reader` strips it with `stripBom()`).
+
 ## Testing and Verification
 
 - Tests live in `src/__tests__/`, mirroring `src/` (`src/scripts/sample.ts` → `src/__tests__/scripts/sample.test.ts`), named `*.test.ts`. Write them selectively, for critical or shared logic.
