@@ -453,5 +453,32 @@ app/
 └── tsconfig.json
 ```
 
+## 🚀 Usage with GitHub Actions
+
+### Deployment to Docker Hub
+
+This repository deploys the latest production Docker image `weaponsforge/fumadocs-routes` to Docker Hub on the **creation of new Tags/Releases from the `main` branch** with GitHub Actions. Supply the following GitHub Secrets and Variable to enable deployment to Docker Hub. It requires a Docker Hub account.
+
+The Docker Hub image is available at:
+
+https://hub.docker.com/r/weaponsforge/fumadocs-routes
+
+### GitHub Secrets and Variables
+
+#### GitHub Secrets
+
+| GitHub Secret Name | Description |
+| --- | --- |
+| DOCKERHUB_USERNAME | Docker Hub username |
+| DOCKERHUB_TOKEN | Deploy token for the Docker Hub account |
+
+#### GitHub Variables
+
+| GitHub Variable Name | Description |
+| --- | --- |
+| DOCKERHUB_USERNAME | Docker Hub username |
+
+<br>
+
 @weaponsforge<br>
 20261018
