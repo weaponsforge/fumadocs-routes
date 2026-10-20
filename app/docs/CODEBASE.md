@@ -21,6 +21,7 @@ app/
 |   │       ├── cli.ts                # CLI entry (bin)
 |   │       └── main.ts               # Script function building from lib/
 |   └── __tests__/                    # Tests, mirroring src/
+|       └── helpers/                  # Shared test helpers, eg. temp fixtures, mocks
 ├── tsconfig.json
 └── package.json
 ```
@@ -212,5 +213,6 @@ Run `npm run verify` and `npm run build` locally and in CI before merging.
 - Place test files in the `__tests__` folder mirroring the the component, hook, or script they test in `src/`.
 - Name test files to match the target module, using the suffix: `*.test.ts` or `*.test.tsx`.
   > **Example:** reader.ts → reader.test.ts
+- Put **reusable test helpers** (temp fixture builders, console/stdout mocks and similar setup code) in `src/__tests__/helpers/`, eg. `makeTree.ts`, instead of redefining them in each test file. Name helpers by what they do (eg., `makeTree`, `createPage`, `createMeta`) and import them with the `@/__tests__/helpers/` alias.
 - **selectively write tests** for critical or global components, features, or business logic as needed.
 - All code should pass `"npm test"` before commit.

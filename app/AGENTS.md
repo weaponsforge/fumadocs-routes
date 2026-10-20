@@ -68,6 +68,7 @@ src/
 │   ├── cli.ts                    # CLI entry (bin)
 │   └── main.ts                   # generate(): runs the steps, writes the JSON
 └── __tests__/                    # Tests, mirroring src/
+    └── helpers/                  # Shared test helpers, eg. temp fixtures, mocks
 ```
 
 ## Output
@@ -118,6 +119,7 @@ A top-level folder without `meta.json` can't be a section, but its pages still g
 - `tsconfig.prod.json` excludes `src/__tests__/` from `dist/`. `types:check` still type-checks the tests.
 - Coverage is always on, and only counts `src/lib`, `src/scripts`, `src/types` and `src/utils`.
 - `content/docs/` is the sample fixture that covers every case (sections, private sections, a public exception, a private page, groups). See `content/README.md`. When you change it or the output rules, update the Output example here and in the README.
+- Put reusable test helpers (temp fixture builders, console/stdout mocks) in `src/__tests__/helpers/`, and import them with `@/__tests__/helpers/...`. Don't redefine them in each test file.
 - Pass the `generate()` inputs through `args`/`context` in tests (`contentDir`, `output`, `strict`). Use `args.cwd` to set the root without `process.chdir`.
 - `npm run verify` (lint + types:check + test) and `npm run build` must both pass before a change is done. `verify` does not build, so run both.
 
