@@ -1,6 +1,9 @@
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
+
+import { getAppVersion } from '@/utils/helpers.js'
 
 export const envInfo = (): void => {
+  console.log('App version:', getAppVersion())
   console.log('Node version:', process.version)
   console.log('Platform:', process.platform)
   console.log('Arch:', process.arch)

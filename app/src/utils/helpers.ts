@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
 import type { RawData } from '@/types.js'
@@ -109,4 +109,20 @@ export const sorted = (list: string[]): string[] => {
  */
 export const formatList = (list: string[]): string => {
   return list.map((slug) => slug || '(root)').join(', ') || '-'
+}
+
+/**
+ * Reads the app's version from its own `package.json`. The path is the same
+ * from `src/utils` and `dist/utils`.
+ * @returns {string} the version, or `unavailable`
+ */
+export const getAppVersion = (): string => {
+  try {
+    const packageUrl = new URL('../../package.json', import.meta.url)
+    const { version } = JSON.parse(readFileSync(packageUrl, 'utf-8')) as { version?: string }
+
+    return version ?? 'unavailable'
+  } catch {
+    return 'unavailable'
+  }
 }

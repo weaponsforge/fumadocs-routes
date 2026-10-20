@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { sum } from './main.js'
 
 const main = () => {
