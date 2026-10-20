@@ -50,11 +50,11 @@
     "report:view": "vite preview --outDir .vitest",
     "docker:report:view": "vite preview --outDir .vitest --host 0.0.0.0",
     "docker:test:ui": "vitest --ui --api.port 51204 --api.host 0.0.0.0",
-    "docker:debug": "export IS_DOCKER=true && node --inspect=0.0.0.0:9229 --import tsx src/scripts/sample.ts",
+    "docker:debug": "export IS_DOCKER=true && node --inspect=0.0.0.0:9229 --import tsx src/scripts/sample/cli.ts",
     "docker:dev:win": "export CHOKIDAR_USEPOLLING=1 && export CHOKIDAR_INTERVAL=1000 && vitest",
     "docker:watch:win": "tsc -p tsconfig.json --watch --watchFile dynamicPriorityPolling --watchDirectory dynamicPriorityPolling",
     "docker:test:ui:win": "export CHOKIDAR_USEPOLLING=1 && export CHOKIDAR_INTERVAL=1000 && npm run docker:test:ui",
-    "info": "tsx ./src/scripts/envinfo.ts",
+    "info": "tsx ./src/scripts/envinfo/cli.ts",
     "routes:generate": "node ./dist/scripts/generate/cli.js",
     "routes:check": "node ./dist/scripts/generate/cli.js --strict"
   },
