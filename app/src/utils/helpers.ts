@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 
-import type { RawData } from './types.js'
+import type { RawData } from '@/types.js'
 
 /**
  * Finds the root of the project the generator runs in: the nearest folder,

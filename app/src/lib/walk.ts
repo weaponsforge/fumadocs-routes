@@ -1,13 +1,13 @@
 import { readdirSync } from 'node:fs'
 import path from 'node:path'
 
-import { PAGE_EXTENSIONS } from './constants.js'
+import { PAGE_EXTENSIONS } from '@/utils/constants.js'
 import {
   isGroup,
   joinSlug,
-} from './utils.js'
+} from '@/utils/helpers.js'
 
-import type { IWalkParams } from './types.js'
+import type { IWalkParams } from '@/types.js'
 
 /**
  * Walks a content folder and fills the private/public lists.

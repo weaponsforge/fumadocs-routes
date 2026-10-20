@@ -3,16 +3,16 @@ import path from 'node:path'
 
 import { load as loadYaml } from 'js-yaml'
 
-import { FRONTMATTER_REGEX } from '@/lib/constants.js'
+import { FRONTMATTER_REGEX } from '@/utils/constants.js'
 import {
   findRootDir,
   getErrorMessage,
   stripBom,
   toPosix,
   toRawData,
-} from '@/lib/utils.js'
+} from '@/utils/helpers.js'
 
-import type { RawData } from '@/lib/types.js'
+import type { RawData } from '@/types.js'
 import type { Diagnostics } from './diagnostics.js'
 
 /**

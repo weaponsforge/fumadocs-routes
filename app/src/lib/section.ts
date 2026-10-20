@@ -1,12 +1,10 @@
 import { existsSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
-import {
-  PAGE_EXTENSIONS,
-} from './constants.js'
-import { isGroup, isNonEmptyString, toPosix } from './utils.js'
+import { PAGE_EXTENSIONS } from '@/utils/constants.js'
+import { isGroup, isNonEmptyString, toPosix } from '@/utils/helpers.js'
 
-import type { GeneratorContext } from './types.js'
+import type { GeneratorContext } from '@/types.js'
 
 /**
  * Lists the folders that sit at the top level of the docs URL space: the

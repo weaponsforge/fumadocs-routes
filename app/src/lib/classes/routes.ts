@@ -1,6 +1,6 @@
-import { sorted } from '@/lib/utils.js'
+import { sorted } from '@/utils/helpers.js'
 
-import type { IDocsRoutes } from '@/lib/types.js'
+import type { IDocsRoutes } from '@/types.js'
 
 /**
  * Accumulates the route lists of a run. `toJSON()` returns sorted,
