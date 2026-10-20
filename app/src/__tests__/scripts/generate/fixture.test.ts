@@ -1,10 +1,9 @@
-import { mkdtempSync, readFileSync } from 'node:fs'
-import os from 'node:os'
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { silenceOutput } from '@/__tests__/helpers/makeTree.js'
+import { makeTempDir, silenceOutput } from '@/__tests__/helpers/makeTree.js'
 import { generate } from '@/scripts/generate/main.js'
 
 const REPO_ROOT = path.resolve(import.meta.dirname, '../../../..')
@@ -30,7 +29,7 @@ afterEach(() => {
 test('generates the documented output for the sample content/docs fixture', () => {
   silenceOutput()
 
-  const output = mkdtempSync(path.join(os.tmpdir(), 'routes-out-'))
+  const output = makeTempDir('routes-out-')
   const result = generate({ args: { cwd: REPO_ROOT, output } })
   const docsRoutesFile = JSON.parse(readFileSync(path.join(output, 'docs-routes.json'), 'utf8'))
 
@@ -40,7 +39,7 @@ test('generates the documented output for the sample content/docs fixture', () =
 
 test('writes the file with 2-space indent and a trailing newline', () => {
   silenceOutput()
-  const output = mkdtempSync(path.join(os.tmpdir(), 'routes-out-'))
+  const output = makeTempDir('routes-out-')
 
   generate({ args: { cwd: REPO_ROOT, output } })
 
@@ -51,7 +50,7 @@ test('writes the file with 2-space indent and a trailing newline', () => {
 test('passes the sample fixture in strict mode', () => {
   silenceOutput()
 
-  const output = mkdtempSync(path.join(os.tmpdir(), 'routes-out-'))
+  const output = makeTempDir('routes-out-')
   const args = { cwd: REPO_ROOT, output, strict: true }
 
   expect(() => generate({ args })).not.toThrow()

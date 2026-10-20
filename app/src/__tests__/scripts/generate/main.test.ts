@@ -1,5 +1,9 @@
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
-import os from 'node:os'
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs'
 import path from 'node:path'
 
 import { afterEach, describe, expect, test, vi } from 'vitest'
@@ -7,6 +11,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 import {
   createMeta,
   createPage,
+  makeTempDir,
   makeTree,
   silenceOutput,
 } from '@/__tests__/helpers/makeTree.js'
@@ -127,7 +132,7 @@ describe('--output', () => {
 describe('docs folder', () => {
   test.each([false, true])('a missing docs folder warns and writes empty lists (strict: %s)', (strict) => {
     const { warn } = silenceOutput()
-    const root = mkdtempSync(path.join(os.tmpdir(), 'routes-'))
+    const root = makeTempDir()
 
     writeFileSync(path.join(root, 'package.json'), '{}')
 

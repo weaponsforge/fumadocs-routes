@@ -1,13 +1,42 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
-import os from 'node:os'
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
 import path from 'node:path'
 
-import { vi } from 'vitest'
+import { afterAll, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 export interface OutputSpies {
   warn: MockInstance<typeof console.warn>;
   error: MockInstance<typeof console.error>;
+}
+
+/** Folder for the files tests write, ignored by git and removed after each test file */
+export const ARTIFACTS_DIR = path.resolve(import.meta.dirname, '..', 'artifacts')
+
+const createdDirs: string[] = []
+
+afterAll(() => {
+  for (const dir of createdDirs.splice(0)) {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+/**
+ * Creates an empty folder under `__tests__/artifacts/`, removed when the test file finishes.
+ * @param {string} [prefix] - folder name prefix, followed by random characters
+ * @returns {string} absolute path of the folder
+ */
+export const makeTempDir = (prefix: string = 'routes-'): string => {
+  mkdirSync(ARTIFACTS_DIR, { recursive: true })
+
+  const dir = mkdtempSync(path.join(ARTIFACTS_DIR, prefix))
+  createdDirs.push(dir)
+
+  return dir
 }
 
 /**
@@ -17,7 +46,7 @@ export interface OutputSpies {
  * @returns {string} absolute path of the temporary root
  */
 export const makeTree = (files: Record<string, string> = {}): string => {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'routes-'))
+  const root = makeTempDir()
   const docs = path.join(root, 'content', 'docs')
 
   writeFileSync(path.join(root, 'package.json'), '{}')

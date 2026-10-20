@@ -1,9 +1,10 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
 import { describe, expect, test } from 'vitest'
 
+import { makeTempDir } from '@/__tests__/helpers/makeTree.js'
 import {
   findRootDir,
   formatList,
@@ -89,7 +90,7 @@ describe('toPosix', () => {
 
 describe('findRootDir', () => {
   test('finds the nearest folder with a package.json, searching upwards', () => {
-    const root = mkdtempSync(path.join(os.tmpdir(), 'routes-'))
+    const root = makeTempDir()
     const nested = path.join(root, 'a', 'b', 'c')
 
     mkdirSync(nested, { recursive: true })
@@ -99,7 +100,7 @@ describe('findRootDir', () => {
   })
 
   test('prefers the nearest package.json', () => {
-    const root = mkdtempSync(path.join(os.tmpdir(), 'routes-'))
+    const root = makeTempDir()
     const inner = path.join(root, 'packages', 'inner')
 
     mkdirSync(inner, { recursive: true })
@@ -110,7 +111,7 @@ describe('findRootDir', () => {
   })
 
   test('returns the start folder itself when it has a package.json', () => {
-    const root = mkdtempSync(path.join(os.tmpdir(), 'routes-'))
+    const root = makeTempDir()
 
     writeFileSync(path.join(root, 'package.json'), '{}')
 
