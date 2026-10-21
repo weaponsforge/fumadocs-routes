@@ -109,7 +109,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](/CONTRIBUTING.md) and the
 
 3. To generate the public/private/exceptions routes list into `docs-routes.json` from the default Fumadocs `content/docs/` MDX docs content directory using the CLI:
 
-   `package.json`
+   `package.json` (replace `^1.1.6` with the appropriate `fumadocs-routes` version).
 
    ```json
    "scripts": {
