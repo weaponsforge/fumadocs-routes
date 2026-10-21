@@ -131,8 +131,8 @@ We welcome contributions! Please see [CONTRIBUTING.md](/CONTRIBUTING.md) and the
 
 #### 1. Simple Usage
 
-Generate `docs-routes.json` in the root project folder<br>
-Reading docs files from `"./content/docs"` (default Fumadocs content location)
+Generate `docs-routes.json` in the root project folder,<br>
+reading docs files from `"./content/docs"` (default Fumadocs content location)
 
 ```typescript
 import path from 'path'
@@ -143,8 +143,8 @@ generate()
 
 #### 2. Set input folder path and JSON output path
 
-Generate `docs-routes.json` under `"./nested/folder/inner"`<br>
-Reading docs files from `"./info/content/docs"`
+Generate `docs-routes.json` under `"./nested/folder/inner"`,<br>
+reading docs files from `"./info/content/docs"`
 
 ```typescript
 import path from 'path'
@@ -192,7 +192,7 @@ console.log(routes.toJSON())
 
 Parse and access only the `sections[]` and `sectionLabels {}` values.
 
-> **NOTE**: All values are read and parsed with `generate()`
+> **NOTE**: All values are read, processed and parsed with `generate()`
 
 ```typescript
 import path from 'path'
@@ -216,7 +216,7 @@ console.log(context.routes.toJSON())
 
 Parse and access only the `privateSections[]`, `publicExceptions[]`, and `privatePages[]` values.
 
-> **NOTE**: All values are read and parsed with `generate()`
+> **NOTE**: All values are read, processed and parsed with `generate()`
 
 ```typescript
 import path from 'path'
