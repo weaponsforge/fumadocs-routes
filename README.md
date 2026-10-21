@@ -1,6 +1,6 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
+Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and session checks.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
@@ -443,12 +443,14 @@ app/
 │   │   ├── constants.ts         # Default paths, file name, regexes
 │   │   ├── envinfo.ts           # Prints runtime versions
 │   │   └── helpers.ts           # Small helper utility functions
-│   └── scripts/
-│       ├── envinfo/cli.ts       # Prints Node and npm versions
-│       ├── generate/
-│       │   ├── cli.ts           # CLI entry (bin)
-│       │   └── main.ts          # generate(): runs the steps, writes the JSON
-│       └── sample/              # Docker debug sample (cli.ts, main.ts)
+│   ├── scripts/
+│   |   ├── envinfo/cli.ts       # Prints Node and npm versions
+│   |   ├── generate/
+│   |   │   ├── cli.ts           # CLI entry (bin)
+│   |   │   └── main.ts          # generate(): runs the steps, writes the JSON
+│   |   └── sample/              # Docker debug sample (cli.ts, main.ts)
+|   └── __tests__/               # Tests, mirroring src/
+|       └── helpers/             # Shared test helpers, eg. temp fixtures, mocks
 ├── package.json
 └── tsconfig.json
 ```

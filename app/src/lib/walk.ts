@@ -10,9 +10,9 @@ import {
 import type { IWalkParams } from '@/types.js'
 
 /**
- * Walks a content folder and fills the private/public lists.
+ * Recursively walks a content folder and fills the private/public lists.
  * @param {GeneratorContext} context - run instances
- * @param {string} dir - absolute folder path
+ * @param {string} dir - absolute folder path of Fumadocs MDX docs content folder
  * @param {string[]} urlSegments - URL segments of the folder (groups excluded)
  * @param {boolean} inheritedPrivate - effective privacy of the parent folder
  * @param {boolean} isCovered - whether a `private_sections` prefix already covers this folder
