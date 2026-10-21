@@ -1,10 +1,22 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and session checks.
+NPM library and CLI that generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and session checks.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
 > TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`.
+
+> [!TIP]
+> - **Run via npx (no installation required)**
+>   - Requirements: NodeJS LTS v24.11.0 or later<br>
+>     Next.js (App Router) Fumadocs project
+>   - Run `npx fumadocs-routes`
+>
+> - **Node.js package**<br>
+>    A Node.js package is available at https://www.npmjs.com/package/fumadocs-routes
+>
+> - **Docker image**<br>
+>   A Docker image is available at https://hub.docker.com/r/weaponsforge/fumadocs-routes
 
 > [!IMPORTANT]
 > Fumadocs doesn't have a `private` frontmatter or meta field by default. The `private` flags used in [`content/docs/`](content/docs/) are a custom added field, added by extending the docs schemas in a Fumadocs project's `source.config.ts`, for example:
@@ -479,6 +491,12 @@ https://hub.docker.com/r/weaponsforge/fumadocs-routes
 | GitHub Variable Name | Description |
 | --- | --- |
 | DOCKERHUB_USERNAME | Docker Hub username |
+
+## References
+
+- [Fumadocs](https://github.com/fuma-nama/fumadocs) - The beautiful & flexible React.js docs framework
+- [Fumadocs - Extend Schemas](https://www.fumadocs.dev/docs/mdx/collections#schema-1)
+- [Fumadocs - Access Control](https://www.fumadocs.dev/docs/guides/access-control)
 
 <br>
 
