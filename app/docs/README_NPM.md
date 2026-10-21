@@ -1,6 +1,6 @@
-## @weaponsforge/fumadocs-routes
+## fumadocs-routes
 
-NPM library for reading or generating a routes list of [Fumadocs](https://github.com/fuma-nama/fumadocs) root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in `content/docs/`.
+NPM library and CLI for reading or generating a list of [Fumadocs](https://github.com/fuma-nama/fumadocs) routes root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in `content/docs/`.
 
 Its output is `docs-routes.json`, a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and  session checks. Its data is also available for programmatic access and usage via the library's scripts and classes.
 
@@ -77,7 +77,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](/CONTRIBUTING.md) and the
 
 1. Install the library preferrably within a Fumadocs project.
    ```bash
-   npm i @weaponsforge/fumadocs-routes
+   npm i fumadocs-routes
    ```
 
 2. Take note of the MDX `"content/docs/"` folder location in the Fumadocs project. Fumadocs initializes it by default in `/<project-root>/content/docs`. Example:
@@ -212,7 +212,7 @@ collectSections(context)
 console.log(context.routes.toJSON())
 ```
 
-### 🟢 C. Parse Only Private Routes and Exceptions
+### 🟢 C. Parse Only Private Routes and Public Exceptions
 
 Parse and access only the `privateSections[]`, `publicExceptions[]`, and `privatePages[]` values.
 
