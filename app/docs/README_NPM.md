@@ -245,7 +245,7 @@ console.log(context.routes.toJSON())
 
 ## 💻 CLI Usage
 
-The following are available flags, passed as arguments to `generate()` when using the CLI.
+The following are available flags, passed as arguments to `generate({ args })` when using the CLI.
 
 ```bash
 npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
