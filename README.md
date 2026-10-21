@@ -1,10 +1,63 @@
 ## fumadocs-routes
 
-Generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects.
+NPM library and CLI that generates `docs-routes.json` containing a list of root docs sections + labels, private sections, public exceptions and private pages from the `private` frontmatter or meta flags in [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs/`. Its output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and session checks.
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
-> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`.
+> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`. Programmatic library usage is available in [READM_NPM.md](/app/docs/README_NPM.md).
+
+> [!TIP]
+> - **Run via npx (no installation required)**
+>   - Requirements: NodeJS LTS v24.11.0 or later<br>
+>     Next.js (App Router) Fumadocs project
+>   - Run `npx fumadocs-routes`
+>
+> - **Node.js package**<br>
+>    A Node.js package is available at https://www.npmjs.com/package/fumadocs-routes
+>
+> - **Docker image**<br>
+>   A Docker image is available at https://hub.docker.com/r/weaponsforge/fumadocs-routes
+
+### Table of Contents
+
+- [Requirements](#-requirements)
+- [Output](#output)
+- [Quickstart](#-quickstart)
+- [Usage (Node, Docker)](#-usage)
+- [Available Scripts](#-available-scripts)
+- [Docker Scripts](#-docker-scripts)
+- [Library Usage](#-library-usage)
+- [CLI Usage](#-cli-usage)
+- [Layout](#layout)
+- [GitHub Actions](#-usage-with-github-actions)
+
+## 📋 Requirements
+
+#### 1. NodeJS LTS v24.11.0 or higher
+
+```text
+Recommended:
+node: 24.11.0
+npm: 11.6.1
+```
+
+#### 2. [Fumadocs](https://www.fumadocs.dev/) documentation project
+
+With an extended `source.config.ts` (see Requirements #3) and folders/pages marked `private`.
+
+- Add `"private": true` in the `meta.json` of main folders (sections) or nested sub-folders that you'd like to keep private.
+- Add `private: true` in the frontmatter of `*.mdx` files for specific pages that you'd like to keep private.
+
+> [!IMPORTANT]
+> Marking them `private` does not automatically make them private in **Fumadocs**. You'd need to set its `proxy.ts` for auth gates (eg., configure Google OAuth2 sign-in, session checks) and server-side redirects using the routes list output in step #5.
+
+> This tool was tested compatible with the Fumadocs Next.js - App Router. Other Fumadocs options/variations are untested.
+
+
+
+#### 3. Fumadocs `source.config.ts`
+
+Extended to hold the `private` field in its `meta.json` and frontmatter (pages).
 
 > [!IMPORTANT]
 > Fumadocs doesn't have a `private` frontmatter or meta field by default. The `private` flags used in [`content/docs/`](content/docs/) are a custom added field, added by extending the docs schemas in a Fumadocs project's `source.config.ts`, for example:
@@ -12,7 +65,7 @@ Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 <details>
 <summary>👉 Click to view an extended Fumadocs <b>source.config.ts</b></summary>
 
-Fumadocs [docs, meta extension reference](https://www.fumadocs.dev/docs/mdx/collections#schema-1)
+`source.config.ts` Fumadocs [docs, meta extension reference](https://www.fumadocs.dev/docs/mdx/collections#schema-1)
 
 ```ts
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema'
@@ -33,45 +86,22 @@ export const docs = defineDocs({
   },
 })
 ```
-
 </details>
 
-The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `meta.json` files, placed where [Fumadocs](https://github.com/fuma-nama/fumadocs) puts docs content by default. It is the default input when `--docs` isn't given, and the [Output](#output) below is generated from it.
 
-### Table of Contents
-
-- [Requirements](#-requirements)
-- [Output](#output)
-- [Quickstart](#-quickstart)
-- [Usage (Node, Docker)](#-usage)
-- [Available Scripts](#-available-scripts)
-- [Docker Scripts](#-docker-scripts)
-- [CLI Usage](#-cli-usage)
-- [Layout](#layout)
-- [Validation](#validation)
-
-## 📋 Requirements
-
-<details>
-<summary>👉 Click to expand the list of requirements</summary>
-
-1. Windows 11/Linux OS
-2. NodeJS LTS v24.11.0 or higher
-   ```text
-   Recommended:
-   node: 24.11.0
-   npm: 11.6.1
-   ```
 ### Core Libraries/Frameworks
 
-(Installed via npm)
+This app uses the following libraries and frameworks (installed via npm).
 
-1. [typescript](https://www.npmjs.com/package/typescript) `v6.0.3` - Compile-time error checker
-2. [tsx](https://www.npmjs.com/package/tsx) `v4.23.15` - Runs TS files in development mode
-3. [vitest](https://www.npmjs.com/package/vitest) `v5.0.5` - Runs tests
-4. [js-yaml]() `v5.5.0` - Parses MDX frontmatter
+| Library | Version | Description |
+| --- | --- | --- |
+| js-yaml | 5.5.0 | Parses MDX frontmatter |
+| typescript | 6.0.3 | Compile-time error checker |
+| tsx | 4.23.15 | Runs TS files in development mode |
+| vitest | 5.0.5 | Runs tests |
 
-</details>
+`js-yaml` is the app's only direct dependency and the rest are development-only dependencies.
+
 <br>
 
 ## Output
@@ -103,8 +133,11 @@ The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `me
 
 File paths become slugs the way Fumadocs builds URLs: `(group)` segments, the extension (`.mdx`/`.md`) and a trailing `index` are dropped.
 
+<br>
 
 ## 🆕 Quickstart
+
+The [`content/docs/`](content/docs/) folder contains sample `.mdx` pages and `meta.json` files, placed where [Fumadocs](https://github.com/fuma-nama/fumadocs) puts docs content by default. It is the default input when `--docs` isn't given, and the [Output](#output) below is generated from it.
 
 #### 1. Clone the repository.
 
@@ -137,6 +170,11 @@ npm run routes:generate
 #### 5. Run available scripts.
 
 See the [Available Scripts](#-available-scripts) section for more information.
+
+#### 6. Use the app as a CLI or a library.
+
+See the [CLI Usage](#-cli-usage) and [Library Usage](#-library-usage) notes for more information.
+
 <br>
 
 
@@ -377,6 +415,10 @@ Watches file changes in `.ts` files using the `tsc --watch` option with `dynamic
 </details>
 <br>
 
+## 💾 Library Usage
+
+Library codes are available for export from `src/`, or from the NPM registry if installed with `npm i fumadocs-routes`. View the library usage examples in [NPM_README.md](/app/docs/README_NPM.md) for more information.
+
 
 ## 💻 CLI Usage
 
@@ -443,12 +485,14 @@ app/
 │   │   ├── constants.ts         # Default paths, file name, regexes
 │   │   ├── envinfo.ts           # Prints runtime versions
 │   │   └── helpers.ts           # Small helper utility functions
-│   └── scripts/
-│       ├── envinfo/cli.ts       # Prints Node and npm versions
-│       ├── generate/
-│       │   ├── cli.ts           # CLI entry (bin)
-│       │   └── main.ts          # generate(): runs the steps, writes the JSON
-│       └── sample/              # Docker debug sample (cli.ts, main.ts)
+│   ├── scripts/
+│   |   ├── envinfo/cli.ts       # Prints Node and npm versions
+│   |   ├── generate/
+│   |   │   ├── cli.ts           # CLI entry (bin)
+│   |   │   └── main.ts          # generate(): runs the steps, writes the JSON
+│   |   └── sample/              # Docker debug sample (cli.ts, main.ts)
+|   └── __tests__/               # Tests, mirroring src/
+|       └── helpers/             # Shared test helpers, eg. temp fixtures, mocks
 ├── package.json
 └── tsconfig.json
 ```
@@ -477,6 +521,12 @@ https://hub.docker.com/r/weaponsforge/fumadocs-routes
 | GitHub Variable Name | Description |
 | --- | --- |
 | DOCKERHUB_USERNAME | Docker Hub username |
+
+## References
+
+- [Fumadocs](https://github.com/fuma-nama/fumadocs) - The beautiful & flexible React.js docs framework
+- [Fumadocs - Extend Schemas](https://www.fumadocs.dev/docs/mdx/collections#schema-1)
+- [Fumadocs - Access Control](https://www.fumadocs.dev/docs/guides/access-control)
 
 <br>
 

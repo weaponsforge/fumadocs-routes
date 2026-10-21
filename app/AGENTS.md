@@ -4,7 +4,7 @@ This file gives agents guidance for working with code in this repository.
 
 ## Project Overview
 
-`fumadocs-routes` is a Node.js CLI and library, published to npm. It reads the `private` flags in a [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs` folder (`meta.json` for folders, frontmatter for pages) and writes `docs-routes.json` with `sections`, `section_labels`, `private_sections`, `public_exceptions` and `private_pages`. The output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for redirects, so keep it small and flat. The [Output](#output) and [Validation](#validation) sections below are the spec.
+`fumadocs-routes` is a Node.js CLI and library, published to npm. It reads the `private` flags in a [Fumadocs](https://github.com/fuma-nama/fumadocs) `content/docs` folder (`meta.json` for folders, frontmatter for pages) and writes `docs-routes.json` with `sections`, `section_labels`, `private_sections`, `public_exceptions` and `private_pages`. The output is a lightweight JSON file, intended for a Fumadocs project's `proxy.ts` to import and use for auth-gated redirects and session checks, so keep it small and flat. The [Output](#output) and [Validation](#validation) sections below are the spec.
 
 Fumadocs has no `private` field by default. Consuming projects add it by extending `pageSchema`/`metaSchema` in their `source.config.ts` with `private: z.boolean().default(false)`.
 
