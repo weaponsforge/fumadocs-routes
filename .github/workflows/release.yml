@@ -55,6 +55,39 @@ jobs:
         env:
           REPORT_URL: ${{ steps.upload-report.outputs.artifact-url }}
 
+  publish-npm:
+    name: Publish to NPM registry
+    if: github.event.release.target_commitish == 'main'
+    needs: [lint-test-app]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Use NodeJS v24.11.0
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.0
+          registry-url: https://registry.npmjs.org/
+
+      - name: Build distribution package
+        run: |
+          cd app
+          npm ci
+          npm run build
+
+      - name: Publish package
+        run: |
+          chmod u+x scripts/npm-publish.sh
+          ./scripts/npm-publish.sh
+          cd app
+          npm publish --provenance --access public
+
   docker-build-push:
     name: Build and Push Docker Image
     if: github.event.release.target_commitish == 'main' && vars.DOCKERHUB_USERNAME != ''
