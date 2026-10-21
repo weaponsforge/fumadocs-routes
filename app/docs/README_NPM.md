@@ -19,6 +19,7 @@ Its output is `docs-routes.json`, a lightweight JSON file, intended for a Fumado
 - [Requirements](#-requirements)
 - [Quickstart](#-quickstart)
 - [Code Samples](#-code-samples)
+- [CLI Usage](#-cli-usage)
 
 ## 📋 Requirements
 
@@ -240,6 +241,30 @@ walk({
 })
 
 console.log(context.routes.toJSON())
+```
+
+## 💻 CLI Usage
+
+The following are available flags, passed as arguments to `generate()` when using the CLI.
+
+```bash
+npx fumadocs-routes [--docs <dir>] [--output <dir>] [--strict]
+```
+
+| Option | Description |
+| --- | --- |
+| `--docs`, `-d` | Fumadocs docs folder.<br>Default: `<root>/content/docs` |
+| `--output`, `-o` | Folder to write `docs-routes.json` into. A file path is rejected,<br>the file is always named `docs-routes.json`. Missing folders are created.<br>Default: `<root>` |
+| `--strict` | A top-level folder without `meta.json` is an error instead of a warning (CI gates). See [Validation](#validation).<br>Default: off |
+
+- `<root>` is the nearest folder with a `package.json`, searched from the working directory upwards.
+- Relative paths resolve from the working directory.
+
+**Example Usage**:
+
+```bash
+npx fumadocs-routes -d ./info/content/docs -o ./info
+npm run routes:generate -- --docs ./info/content/docs -o ./some/other --strict
 ```
 
 ## References
