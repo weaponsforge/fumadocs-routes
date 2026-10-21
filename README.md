@@ -4,7 +4,7 @@ NPM library and CLI that generates `docs-routes.json` containing a list of root 
 
 Folders set the flag in `meta.json` and pages set it in their **frontmatter**.
 
-> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`.
+> TypeScript application code, codebase guidelines [CODEBASE.md](/app/docs/CODEBASE.md) and workflow [AGENTS.md](/app/AGENTS.md) documentation lives in `app/`. Programmatic library usage is available in [READM_NPM.md](/app/docs/README_NPM.md).
 
 > [!TIP]
 > - **Run via npx (no installation required)**
