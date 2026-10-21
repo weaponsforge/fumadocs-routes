@@ -9,7 +9,7 @@ Its output is `docs-routes.json`, a lightweight JSON file, intended for a Fumado
 > - **Run via npx (no installation required)**
 >   - Requirements: NodeJS LTS v24.11.0 or later<br>
 >     Next.js (App Router) Fumadocs project
->   - Run `npx fumadocs-routes --help`
+>   - Run `npx fumadocs-routes`
 >
 > - **Docker image**<br>
 >   A Docker image is available at https://hub.docker.com/r/weaponsforge/fumadocs-routes
